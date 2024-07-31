@@ -57,26 +57,26 @@
       <div class="row mb-3">
         <!--Class Dropdown-->
         <div class="col">
-            <select class="form-select form-select-lg" id="Class" onchange="classSelect()">
-              <option selected>Class</option>
+            <select class="form-select form-select-lg" id="Class" onchange="SelectFunc()">
+              <option selected value="Class">Class</option>
               <option value="NC">NC</option>
-              <option value="KGI">LKG</option>
-              <option value="KGII">UKG</option>
-              <option value="1">1st</option>
-              <option value="2">2nd</option>
-              <option value="3">3rd</option>
-              <option value="4">4th</option>
-              <option value="5">5th</option>
-              <option value="6">6th</option>
-              <option value="7">7th</option>
-              <option value="8">8th</option>
+              <option value="LKG">LKG</option>
+              <option value="UKG">UKG</option>
+              <option value="1st">1st</option>
+              <option value="2nd">2nd</option>
+              <option value="3rd">3rd</option>
+              <option value="4th">4th</option>
+              <option value="5th">5th</option>
+              <option value="6th">6th</option>
+              <option value="7th">7th</option>
+              <option value="8th">8th</option>
             </select>
           </div>
 
         <!--Subject Dropdown-->
         <div class="col">
-            <select class="form-select form-select-lg" id="Subject" onchange="subjectSelect()">
-              <option selected>Subject</option>
+            <select class="form-select form-select-lg" id="Subject" onchange="SelectFunc()">
+              <option selected value="Subject">Subject</option>
               <option value="English">English</option>
               <option value="Hindi">Hindi</option>
               <option value="Math">Math</option>
@@ -112,21 +112,6 @@
 
     <!--Handling Select Dropdown-->
     <script>
-      
-      function classSelect() {
-        const clas=document.getElementById("Class").value
-        console.log(clas)
-      }
-      function subjectSelect() {
-        const subject=document.getElementById("Subject").value
-        console.log(subject)
-      }
-
-    </script>
-
-    <!--Creating Tables in bulk-->
-
-    <script>
 
       const data = [
       ["NC",10],
@@ -140,26 +125,37 @@
       ["6th",2],
       ["7th",2],
       ["8th",2]];
+      
+      function SelectFunc() {
+        const clas=document.getElementById("Class").value
+        const sub=document.getElementById("Subject").value
+
+        if (sub!=="Subject" && clas!=="Class"){
+          const index=data.findIndex(item => item[0] === clas)
+          const strength = data[index][1];
+          creatingRows(clas,strength,sub)
+        }
+
+      }
 
 
-
-      const table = document.getElementById("tableBody");
-
-      for (let tr = 0; tr < data.length; tr++) {
-
-        for (let td = 1; td < data[tr][1]+1; td++){
+      function creatingRows(cls,strength,sub) {
+        const table = document.getElementById("tableBody")
+        for (let tr = 1; tr < strength+1; tr++){
+          //Creating Row for all the students in 11 sets
           const row = document.createElement("tr")
 
+          //Creating table data of class
           const tdClass = document.createElement("td")
           tdClass.setAttribute("data-label", "Class")
-          tdClass.textContent=data[tr][0];
+          tdClass.textContent=cls;
 
           const tdRoll = document.createElement("td")
           tdRoll.setAttribute("data-label", "Roll no")
-          tdRoll.textContent=td;
+          tdRoll.textContent=tr;
 
+          //Creating table data of Marks Input
           const tdMarks = document.createElement("td")
-
           const inputField = document.createElement("input")
           inputField.setAttribute("type", "number");
           inputField.setAttribute("placeholder", "Enter Marks");
@@ -167,41 +163,61 @@
           inputField.setAttribute("class", "form-control");
           tdMarks.appendChild(inputField)
 
-          //const tableData = document.createElement("td");
-          //tableData.setAttribute("data-label", heading[td])
-          //tableData.textContent=data[tr][td];
+          //Start appending td in rows
           row.appendChild(tdClass);
           row.appendChild(tdRoll);
           row.appendChild(tdMarks);
+
           table.appendChild(row)
 
-
         }
+      }
+     
 
-        //const inputField = document.createElement("input")
-        //inputField.setAttribute("id", "marksInput");
-        //inputField.setAttribute("type", "number");
-        //inputField.setAttribute("placeholder", "Enter Marks");
-        //inputField.setAttribute("inputmode", "numeric");
-        //inputField.setAttribute("class", "form-control");
+    //Creating Tables in bulk
+      /*const table = document.getElementById("tableBody");
 
-        //var tdInput = document.createElement("td");
-        //tdInput.appendChild(inputField)
-        //tableRow.appendChild(tdInput)
+      for (let tr = 0; tr < data.length; tr++) {
 
+        for (let td = 1; td < data[tr][1]+1; td++){
 
-        //table.appendChild(row)
+          //Creating Row for all the students in 11 sets
+          const row = document.createElement("tr")
 
-        
-      };
-      //console.log(tableRow)
+          //Creating table data of class
+          const tdClass = document.createElement("td")
+          tdClass.setAttribute("data-label", "Class")
+          tdClass.textContent=data[tr][0];
+
+          //Creating table data of Roll no
+          const tdRoll = document.createElement("td")
+          tdRoll.setAttribute("data-label", "Roll no")
+          tdRoll.textContent=td;
+
+          //Creating table data of Marks Input
+          const tdMarks = document.createElement("td")
+          const inputField = document.createElement("input")
+          inputField.setAttribute("type", "number");
+          inputField.setAttribute("placeholder", "Enter Marks");
+          inputField.setAttribute("inputmode", "numeric");
+          inputField.setAttribute("class", "form-control");
+          tdMarks.appendChild(inputField)
+
+          //Start appending td in rows
+          row.appendChild(tdClass);
+          row.appendChild(tdRoll);
+          row.appendChild(tdMarks);
+
+          //Start appending row in table
+          table.appendChild(row)
+        }        
+      }*/
     
     </script>
 
     <!--Handling On Enter Automatic Task-->
 
     <script>
-      
       // Function to handle the 'Enter' key press
       const inputs = document.querySelectorAll('input');
         
