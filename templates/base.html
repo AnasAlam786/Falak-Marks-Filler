@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet"/>
+    <title>{% block title %}Falak Public School{% endblock %}</title>
+    <link rel="icon" href="static/logo.svg" type="image/svg+xml">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+    <style>
+      body {
+        background-color: #121212;
+        color: #ffffff;
+      }
+
+      .input-group input {
+        margin-right: 10px; /* Space between input and button */
+        flex: 1; /* Makes the input take available space */
+      }
+
+      @media (max-width: 768px) {
+        .table thead {
+          display: none;
+        }
+        .table, .table tbody, .table tr, .table td {
+          display: block;
+          width: 100%;
+        }
+        .table tr {
+          margin-bottom: 15px;
+          border-bottom: 2px solid #dee2e6;
+        }
+        .table td {
+          display: flex;
+          justify-content: space-between;
+          padding: 0.75rem;
+          border: none;
+          border-bottom: 1px solid #dee2e6;
+          text-align: right;
+        }
+        .table td::before {
+          content: attr(data-label);
+          flex: 1;
+          font-weight: bold;
+          text-align: left;
+          padding-right: 0.75rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body data-bs-theme="dark">
+    <nav class="navbar navbar-expand-lg bg-dark py-0">
+      <div class="container-fluid">
+        <a class="navbar-brand fw-bold fs-4 text-white" href="/">
+          <img src="{{ url_for('static', filename='logo.svg') }}" alt="Logo" width="40" height="35" class="d-inline-block align-text-top me-2">
+          Falak Public School
+        </a>
+      </div>
+    </nav>
+
+    <div class="container mt-4 xl">
+      {% block content %}
+
+      {% endblock %}
+    </div>
+  </body>
+</html>
