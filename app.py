@@ -8,7 +8,6 @@ import json
 from requests import get
 
 
-
 app = Flask(__name__)
 
 load_dotenv()
@@ -21,8 +20,12 @@ creds = Credentials.from_service_account_info(credentials, scopes=SCOPES)
 service = build('sheets', 'v4', credentials=creds)
 
 
-@app.route('/',methods=["GET","POST"])
-def index():
+@app.route('/')
+def home():
+    return render_template('home.html')
+
+@app.route('/updatemarks',methods=["GET","POST"])
+def updatemarks():
     data=None
     
     if request.method == "POST":
@@ -42,7 +45,7 @@ def index():
             roll_index = header.index('ROLL')
             subject_index = header.index(f'{EXAM}_{SUBJECT}')
 
-            print(class_index, roll_index, subject_index)
+            #print(class_index, roll_index, subject_index)
 
             data = [
                 {
@@ -58,7 +61,7 @@ def index():
 
             
             
-    return render_template('index.html',data=data)
+    return render_template('updatemarks.html',data=data)
 
 
 @app.route('/update', methods=['POST'])
@@ -81,3 +84,7 @@ def update():
 
     except Exception as e:
         return jsonify({"STATUS": "FAILED", "ERROR": str(e)})
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
