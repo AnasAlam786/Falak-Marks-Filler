@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% block title %}Update Marks{% endblock %}
 {% block content %}
+
+<script src="{{ url_for('static', filename='upsatemarks.js') }}"></script>
+
 <form id="selectionForm" method="POST" action="/updatemarks">
   <div class="row mb-3">
     
@@ -21,7 +24,7 @@
         <option value="URDU">Urdu</option>
         <option value="DEENIYAT">Deniyaat</option>
         <option value="SCIENCE">Science</option>
-        <option value="COMPUTER">Computer</option>
+        <option value="COMPUTER"">Computer</option>
         <option value="GK">GK</option>
         <option value="SST">EVS / SST</option>
         <option value="DRAWING">Drawing</option>
