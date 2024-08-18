@@ -12,13 +12,11 @@ from werkzeug.security import check_password_hash
 
 app = Flask(__name__)
 load_dotenv()
+app.config['SECRET_KEY']=os.getenv('SESSION_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('URI')
-app.secret_key=os.getenv('SESSION_KEY')
-
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
-#Falak@1234
 
 class TeachersLogin(db.Model):
     __tablename__ = 'TeachersLogin'
