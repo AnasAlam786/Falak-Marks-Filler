@@ -7,17 +7,9 @@
     <div class="col">  
       <select class="form-select form-select-lg" id="Class" name="selectClass">
         <option selected value="Class">Class</option>
-        <option value="NC">NC</option>
-        <option value="LKG">LKG</option>
-        <option value="UKG">UKG</option>
-        <option value="1st">1st</option>
-        <option value="2nd">2nd</option>
-        <option value="3rd">3rd</option>
-        <option value="4th">4th</option>
-        <option value="5th">5th</option>
-        <option value="6th">6th</option>
-        <option value="7th">7th</option>
-        <option value="8th">8th</option>
+        {% for cls in classes %}
+          <option value="{{ cls }}">{{ cls }}</option>
+        {% endfor %}
       </select>
     </div>
     <div class="col">
@@ -27,11 +19,11 @@
         <option value="HINDI">Hindi</option>
         <option value="MATH">Math</option>
         <option value="URDU">Urdu</option>
+        <option value="DEENIYAT">Deniyaat</option>
         <option value="SCIENCE">Science</option>
         <option value="COMPUTER">Computer</option>
         <option value="GK">GK</option>
         <option value="SST">EVS / SST</option>
-        <option value="DEENIYAT">Deniyaat</option>
         <option value="DRAWING">Drawing</option>
       </select>
     </div>
