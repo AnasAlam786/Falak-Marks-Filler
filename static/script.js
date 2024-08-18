@@ -1,13 +1,49 @@
 document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById("selectionForm").addEventListener("change", function() {
-        const classValue = document.getElementById("Class").value;
-        const subjectValue = document.getElementById("Subject").value;
-        const examValue = document.getElementById("Exam").value;
+    function updateOptions() {
+        var classValue = document.getElementById("Class").value;
+        var subject = document.getElementById("Subject");
+        var subjectOptions = subject.options;
+        var disableSubjects = ['SCIENCE', 'COMPUTER', 'GK', 'SST', 'DRAWING'];
+        var disableClasses = ['NC', 'LKG', 'UKG'];
+        
 
-        if (subjectValue !== "Subject" && classValue !== "Class") {
+        // Enable all options first
+        for (var i = 0; i < subjectOptions.length; i++) {
+            subjectOptions[i].disabled = false;
+        }
+
+        // Disable options based on class selection
+        if (disableClasses.includes(classValue)) {
+            for (var i = 0; i < subjectOptions.length; i++) {
+                var option = subjectOptions[i];
+                if (disableSubjects.includes(option.value)) {
+                    option.disabled = true;
+                }
+            }
+        }
+
+        // Enable all options again before disabling based on subject selection
+        var classOptions = document.getElementById("Class").options;
+        for (var i = 0; i < classOptions.length; i++) {
+            classOptions[i].disabled = false;
+        }
+
+        var subjectValue = document.getElementById("Subject").value;
+        if (disableSubjects.includes(subjectValue)) {
+            for (var i = 0; i < classOptions.length; i++) {
+                var option = classOptions[i];
+                if (disableClasses.includes(option.value)) {
+                    option.disabled = true;
+                }
+            }
+        }
+
+        if (subject.value !== "Subject" && classValue !== "Class") {
             document.getElementById("submitButton").click();
         }
-    });
+    }
+
+    document.getElementById("selectionForm").addEventListener("change", updateOptions);
 });
 
 function submit(input) {
@@ -124,115 +160,3 @@ document.addEventListener("keydown", (event) => {
 
     }
 });
-
-
-
-
-/*function SelectFunc() {
-  const CLASS = document.getElementById("Class").value;
-  const SUBJECT = document.getElementById("Subject").value;
-
-  if (SUBJECT !== "Subject" && CLASS !== "Class") {
-      var tbody = document.getElementById("tableBody");
-
-      while (tbody.firstChild) {
-          tbody.removeChild(tbody.firstChild)}
-
-          loadData().then((rows) => {
-
-              if (rows != null) {
-
-                  creatingRows(rows, CLASS, SUBJECT)
-              }
-          });      
-  }
-}
-
-async function loadData() {
-  var url ="https://sheets.googleapis.com/v4/spreadsheets/1yGyqIyDWtaVK1z2LbvvtEDl1YpeIgWMwuAyUcIdr3Cc/values/Sheet1?key=AIzaSyCunanUcxEoloBYJR1EqhkD16-uWAxlQzY";
-
-  try {
-      const response = await fetch(url);
-      if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const jdata = await response.json();
-      const rows = jdata.values;
-
-
-
-      return rows
-  } catch (error) {
-      console.log(error);
-  }
-}
-
-loadData().then((fetchData) => {rows = fetchData});
-
-
-function creatingRows(rows, CLASS, SUBJECT) {
-
-    const exam_col = "FA1_" + SUBJECT
-    const keys = rows[0]
-    
-    const Data = rows.slice(1).map(row => 
-        Object.fromEntries(keys.map((key, index) => 
-            [key, row[index]])))
-
-    const data = Data.filter((item) => item.CLASS === CLASS)
-    const table = document.getElementById("tableBody");
-
-    for (let i = 0; i < data.length; i++) {
-        
-    
-        const row = data[i];
-        //Creating Row for all the students in 11 sets
-        const rowElement = document.createElement("tr");
-    
-        //Creating table data of class
-        const tdClass = document.createElement("td");
-        tdClass.setAttribute("data-label", "Class");
-        tdClass.textContent = row.CLASS;
-    
-        const tdRoll = document.createElement("td");
-        tdRoll.setAttribute("data-label", "Roll no");
-    
-        tdRoll.textContent = row.ROLL;
-    
-        //Creating table data of Marks Input
-        const tdMarks = document.createElement("td");
-        const inputField = document.createElement("input");
-        const submitButton = document.createElement("button");
-        const InputButtonDIV = document.createElement("div");
-          
-        InputButtonDIV.setAttribute("class", "input-group")
-    
-        inputField.setAttribute("type" ,"number");
-        inputField.setAttribute("inputmode", "numeric");
-        inputField.setAttribute("placeholder", row.CLASS+" " + SUBJECT + " MARKS");
-        inputField.setAttribute("class", "form-control");
-        inputField.setAttribute("onFocus", "this.select()");
-        inputField.setAttribute("value", row[exam_col]);
-        inputField.setAttribute("studentclass", row.CLASS);
-        inputField.setAttribute("roll",row.ROLL);
-        inputField.setAttribute("exam",exam_col);
-    
-        submitButton.setAttribute("type", "submit")
-        submitButton.setAttribute("class", "btn btn-primary")
-        submitButton.setAttribute("onclick", "submit(this.previousElementSibling)")
-        submitButton.textContent = 'SUBMIT';  
-          
-        InputButtonDIV.appendChild(inputField);
-        InputButtonDIV.appendChild(submitButton);
-    
-        tdMarks.appendChild(InputButtonDIV);
- 
-          //Start appending td in rows
-        rowElement.appendChild(tdClass);
-        rowElement.appendChild(tdRoll);
-        rowElement.appendChild(tdMarks);
-    
-        table.appendChild(rowElement);
-  }
-}*/
-
