@@ -26,7 +26,7 @@ class TeachersLogin(db.Model):
     email = db.Column(db.Text, unique=True, nullable=False)
     password = db.Column(db.Text, nullable=False)
     classes = db.Column(db.JSON, nullable=False)
-    ip = db.Column(db.Text, unique=True)
+    ip = db.Column(db.JSON)
     role = db.Column(db.Text, nullable=False)
 
 
