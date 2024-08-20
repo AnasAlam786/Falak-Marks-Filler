@@ -1,5 +1,4 @@
 from flask import Flask, render_template, jsonify, request, session, url_for, redirect
-from flask_sqlalchemy import SQLAlchemy
 from google.auth import credentials
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
@@ -8,27 +7,16 @@ from dotenv import load_dotenv
 import json
 from requests import get
 from werkzeug.security import check_password_hash
+from model import db, TeachersLogin
+
+load_dotenv()
 
 app = Flask(__name__)
-load_dotenv()
 app.config['SECRET_KEY'] = os.getenv('SESSION_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app)
-
-
-class TeachersLogin(db.Model):
-    __tablename__ = 'TeachersLogin'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Text, nullable=False)
-    email = db.Column(db.Text, unique=True, nullable=False)
-    password = db.Column(db.Text, nullable=False)
-    classes = db.Column(db.JSON, nullable=False)
-    ip = db.Column(db.JSON)
-    role = db.Column(db.Text, nullable=False)
-
+db.init_app(app)
 
 SPREADSHEET_ID = os.getenv('SPREADSHEET_ID')
 credentials = json.loads(os.getenv('CREDENTIALS'))
@@ -46,6 +34,8 @@ def home():
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
+    error=None
+    
     if "email" in session:
         return redirect(url_for('updatemarks'))
 
@@ -55,17 +45,17 @@ def login():
 
         dbTeacher = TeachersLogin.query.filter_by(email=email).first()
 
-        if dbTeacher:
-            if check_password_hash(dbTeacher.password, password):
-                session['email'] = dbTeacher.email
-                session['name'] = dbTeacher.name
-                session['classes'] = dbTeacher.classes
-                session['ip'] = dbTeacher.ip
-                session['role'] = dbTeacher.role
-                return redirect(url_for('updatemarks'))
+        if dbTeacher and check_password_hash(dbTeacher.password, password):
+            session['email'] = dbTeacher.email
+            session['name'] = dbTeacher.name
+            session['classes'] = dbTeacher.classes
+            session['ip'] = dbTeacher.ip
+            session['role'] = dbTeacher.role
+            return redirect(url_for('updatemarks'))
+        else:
+            error="Wrong email or password"
 
-    else:
-        return render_template('login.html')
+    return render_template('login.html', error=error)
 
 
 @app.route('/updatemarks', methods=["GET", "POST"])
@@ -91,8 +81,6 @@ def updatemarks():
                 class_index = header.index('CLASS')
                 roll_index = header.index('ROLL')
                 subject_index = header.index(f'{EXAM}_{SUBJECT}')
-
-                #print(class_index, roll_index, subject_index)
 
                 data = [{
                     'CLASS': row[class_index],
