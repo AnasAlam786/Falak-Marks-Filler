@@ -76,20 +76,22 @@ def updatemarks():
             if res.status_code == 200:
 
                 jdata = res.json().get('values')
+                
 
                 header = jdata[0]
+                name_index = header.index('STUDENTS NAME')
                 class_index = header.index('CLASS')
                 roll_index = header.index('ROLL')
                 subject_index = header.index(f'{EXAM}_{SUBJECT}')
-
                 data = [{
                     'CLASS': row[class_index],
+                    'NAME': row[name_index],
                     'ROLL': row[roll_index],
                     'EXAM': EXAM,
                     'SUBJECT': SUBJECT,
                     'SCORE': row[subject_index]
                 } for row in jdata[1:] if row[class_index] == CLASS]
-
+        
         return render_template('updatemarks.html', data=data, classes=classes)
 
     else:
@@ -120,3 +122,73 @@ def update():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+@app.route('/view', methods=['GET', 'POST'])
+def ViewData():
+
+    
+    return render_template('viewdata.html')
+
+
+"""
+GOOGLE_SHEETS_URL = "https://sheets.googleapis.com/v4/spreadsheets/1yGyqIyDWtaVK1z2LbvvtEDl1YpeIgWMwuAyUcIdr3Cc/values/Sheet1?key=AIzaSyCunanUcxEoloBYJR1EqhkD16-uWAxlQzY"
+
+@app.route('/getData/<CLASS>/<SUBJECT>',methods=['GET','POST'])
+def getData(CLASS, SUBJECT):
+    response = requests.get(GOOGLE_SHEETS_URL)
+
+    if response.status_code == 200:
+        jdata = response.json().get('values')
+        df = pd.DataFrame(jdata[1:], columns=jdata[0])
+        exam=f"FA1_{SUBJECT}"
+
+        filtered_df = df[df['CLASS'] == CLASS]
+        data = filtered_df[['CLASS', 'ROLL', exam]].to_dict(orient='records')
+        return jsonify(data)
+    else:
+        return "Failed"
+    return f"Class is {CLASS}"
+
+
+
+function SelectFunc() {
+          const CLASS = document.getElementById("Class").value;
+          const SUBJECT = document.getElementById("Subject").value;
+
+          if (SUBJECT !== "Subject" && CLASS !== "Class") {
+
+            fetch(`/getData/${CLASS}/${SUBJECT}`,{method: 'GET',
+                 headers: {
+                     'Content-Type': 'application/json'}
+                 })
+            .then(response => response.json())
+            .then(data => {
+              creatingRows(data, SUBJECT)
+              onEnter()
+            })
+            console.log("Hii there")
+          }
+
+
+        }  
+
+
+
+
+function onEnter(rows) {
+        focusedInput = document.activeElement
+
+        if (focusedInput && focusedInput.tagName === 'INPUT') {
+
+        focusedInput.addEventListener("keydown", (event) => {
+
+            if (event.key === "Enter") {
+                event.preventDefault()
+                button=focusedInput.nextElementSibling
+                submit(button)
+
+
+            }
+        });
+    }
+}"""
