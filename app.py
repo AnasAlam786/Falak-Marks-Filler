@@ -83,7 +83,8 @@ def updatemarks():
                 roll_index = header.index('ROLL')
                 name_index = header.index('STUDENTS NAME')
                 print(header)
-                print(name_index)
+                print(header.index('CLASS'))
+                print(header)
                 class_index = header.index('CLASS')
                 
                 subject_index = header.index(f'{EXAM}_{SUBJECT}')
