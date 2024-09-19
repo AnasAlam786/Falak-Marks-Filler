@@ -80,7 +80,6 @@
         <th scope="col">Name</th>
         <th scope="col">Class</th>
         <th scope="col">Roll No</th>
-        <th scope="col">Subject</th>
         <th scope="col">Marks</th>
       </tr>
     </thead>
@@ -88,10 +87,10 @@
       {% if data %}
       {% for row in data %}
       <tr>
+        <td data-label="Name">{{ row.NAME }}</td>
         <td data-label="Class">{{ row.CLASS }}</td>
         <td data-label="Roll no">{{ row.ROLL }}</td>
-        <td data-label="Name">{{ row.NAME }}</td>
-        <td data-label="Subject">{{ row.SUBJECT }}</td>
+        
         <td>
           <div class="input-group">
             <input type="number" inputmode="numeric" 
