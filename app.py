@@ -79,6 +79,7 @@ def updatemarks():
                 
 
                 header = jdata[0]
+                print(header)
                 name_index = header.index('STUDENTS NAME')
                 class_index = header.index('CLASS')
                 roll_index = header.index('ROLL')
