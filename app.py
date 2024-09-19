@@ -79,10 +79,13 @@ def updatemarks():
                 
 
                 header = jdata[0]
-                print(header)
-                name_index = header.index('STUDENTS NAME')
-                class_index = header.index('CLASS')
+                
                 roll_index = header.index('ROLL')
+                name_index = header.index('STUDENTS NAME')
+                print(header)
+                print(name_index)
+                class_index = header.index('CLASS')
+                
                 subject_index = header.index(f'{EXAM}_{SUBJECT}')
                 data = [{
                     'CLASS': row[class_index],
