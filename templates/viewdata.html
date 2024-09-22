@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}Students Data{% endblock %}
+{% block content %}
+
+<div class="container my-4">
+    <!-- Desktop view (visible on md and larger screens) -->
+  {% if data %}
+  {% for row in data %}
+    <div class="d-none d-md-block">
+      <table class="table table-hover mb-0 bg-white">
+        <thead class="bg-light">
+          <tr class="text-start">
+            <th>Name</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="text-start">
+            <td>
+              <div class="d-flex align-items-center">
+                <img src= "{{row.IMAGE}}"
+                    alt="Student Image"
+                    class="img-fluid rounded-circle" 
+                    style="width: 70px; height: 70px; object-fit: cover; border: 3px solid #fff;">
+                <div class="ms-3">
+                  <p class="fw-bold mb-1">{{ row.STUDENTS_NAME }}</p>
+                  <p class="text-muted mb-0">john.doe@gmail.com</p>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="ms-2">
+                <p class="fw-bold mb-1">Software Engineer</p>
+                <p class="text-muted mb-0">IT department</p>
+              </div>
+            </td>
+            <td>
+              <span class="badge bg-success rounded-pill">Active</span>
+            </td>
+            <td>
+              <button type="button" class="btn btn-link btn-sm rounded-pill">Edit</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  {% endfor %}
+  {% endif %}
+
+  <!-- Mobile view (visible on sm and smaller screens) -->
+  {% if data %}
+  {% for row in data %}
+  <div class="d-block d-md-none">
+      <div class="card shadow-lg mx-auto my-3 border-0" style="max-width: 350px; border-radius: 12px;">
+        <div class="d-flex align-items-center">
+          <div class="p-2">
+            {% if row.IMAGE %}
+              <img src="{{row.IMAGE}}"
+                  alt="Student Image" 
+                  class="img-fluid rounded-circle" 
+                  style="width: 90px; height: 100px; object-fit: cover; border: 2px solid #fff;">
+
+            {%  else %}
+              <img src="https://cdn.pixabay.com/photo/2016/04/22/04/57/graduation-1345143_1280.png"
+                    alt="Student Image" 
+                    class="img-fluid rounded-circle" 
+                    style="width: 90px; height: 100px; object-fit: cover; border: 2px solid #fff;">
+
+            {% endif %}
+          </div>
+          <div class="p-2 text-start">
+            <table>
+              <tbody>
+                <tr>
+
+                  <td class="border-bottom pb-3"><strong style="font-size: 0.85rem; margin-right: 1rem;">Name:</strong></td>
+                  <td class="border-bottom pb-3">
+                    <div style="font-size: 1rem;"> <strong>{{ row.STUDENTS_NAME }}</strong></div>
+                    <div><small class="text-muted" style="font-size: 0.75rem;">{{ row.FATHERS_NAME }}</small></div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="pb-2"><strong style="font-size: 0.85rem;">Class:</strong></td>
+                  <td class="pb-2">
+                    <div style="font-size: 1rem;"><strong>{{ row.CLASS }} - {{ row.ROLL }}</strong></div>
+                    <div><small class="text-muted" style="font-size: 0.75rem;">{{  row.ADMISSION_NO }}</small></div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="pb-2"><strong style="font-size: 0.85rem;">DOB:</strong></td>
+                  <td class="pb-2">
+                    <div style="font-size: 1rem;"><strong>{{ row.formatted_dob }}</strong></div>
+                    <!--<span class="badge bg-success rounded-pill">{{ row.DOB }}</span>-->
+                  </td>
+                </tr>
+                <tr>
+                  <td class="pb-2"><strong style="font-size: 0.85rem;">Phone:</strong></td>
+                  <td class="pb-2">
+                    <a href="tel:{{row.PHONE}}" class="text-decoration-none"> 
+                      <i class="fa fa-phone"></i>
+                      <strong>{{row.PHONE}}</strong>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  {% endfor %}
+  {% endif %}
+
+</div>
+
+{% endblock %}
