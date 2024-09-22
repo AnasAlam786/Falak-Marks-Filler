@@ -7,7 +7,8 @@ from dotenv import load_dotenv
 import json
 from requests import get
 from werkzeug.security import check_password_hash
-from model import db, TeachersLogin
+from model import db, TeachersLogin, StudentsDB
+from datetime import datetime
 
 load_dotenv()
 
@@ -79,11 +80,9 @@ def updatemarks():
                 
 
                 header = jdata[0]
-                
-                roll_index = header.index('ROLL')
                 name_index = header.index('STUDENTS NAME')
                 class_index = header.index('CLASS')
-                
+                roll_index = header.index('ROLL')
                 subject_index = header.index(f'{EXAM}_{SUBJECT}')
                 data = [{
                     'CLASS': row[class_index],
@@ -122,16 +121,16 @@ def update():
         return jsonify({"STATUS": "FAILED", "ERROR": str(e)})
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
 
 @app.route('/view', methods=['GET', 'POST'])
 def ViewData():
+    data = StudentsDB.query.filter_by(CLASS="I")
+    return render_template('viewdata.html',data=data)
 
+
+if __name__ == '__main__':
+    app.run(debug=True)
     
-    return render_template('viewdata.html')
-
-
 """
 GOOGLE_SHEETS_URL = "https://sheets.googleapis.com/v4/spreadsheets/1yGyqIyDWtaVK1z2LbvvtEDl1YpeIgWMwuAyUcIdr3Cc/values/Sheet1?key=AIzaSyCunanUcxEoloBYJR1EqhkD16-uWAxlQzY"
 
