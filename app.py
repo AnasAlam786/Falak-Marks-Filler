@@ -8,7 +8,6 @@ import json
 from requests import get
 from werkzeug.security import check_password_hash
 from model import db, TeachersLogin, StudentsDB
-from datetime import datetime
 
 load_dotenv()
 
@@ -119,13 +118,6 @@ def update():
 
     except Exception as e:
         return jsonify({"STATUS": "FAILED", "ERROR": str(e)})
-
-
-
-@app.route('/view', methods=['GET', 'POST'])
-def ViewData():
-    data = StudentsDB.query.filter_by(CLASS="I")
-    return render_template('viewdata.html',data=data)
 
 
 if __name__ == '__main__':
