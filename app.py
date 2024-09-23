@@ -121,7 +121,7 @@ def update():
 
 @app.route('/view', methods=['GET', 'POST'])
 def ViewData():
-    data = StudentsDB.query.filter_by(CLASS="I")
+    data = StudentsDB.query.all()
     return render_template('viewdata.html',data=data)
 
 
