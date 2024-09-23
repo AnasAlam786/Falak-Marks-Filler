@@ -119,6 +119,11 @@ def update():
     except Exception as e:
         return jsonify({"STATUS": "FAILED", "ERROR": str(e)})
 
+@app.route('/view', methods=['GET', 'POST'])
+def ViewData():
+    data = StudentsDB.query.filter_by(CLASS="I")
+    return render_template('viewdata.html',data=data)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
