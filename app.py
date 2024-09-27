@@ -8,6 +8,7 @@ import json
 from requests import get
 from werkzeug.security import check_password_hash
 from model import db, TeachersLogin, StudentsDB
+from bs4 import BeautifulSoup
 
 load_dotenv()
 
@@ -60,15 +61,17 @@ def login():
 
 @app.route('/updatemarks', methods=["GET", "POST"])
 def updatemarks():
+
     if "email" in session:
         classes = session['classes']
-
         data = None
 
         if request.method == "POST":
-            SUBJECT = request.form.get('selectSubject')
-            CLASS = request.form.get('selectClass')
-            EXAM = request.form.get('selectExam')
+            data = request.json
+
+            SUBJECT =  data.get('subject')
+            CLASS = data.get('class')
+            EXAM = data.get('exam')
 
             url = f"https://sheets.googleapis.com/v4/spreadsheets/{SPREADSHEET_ID}/values/Sheet1?key={api}"
 
@@ -76,7 +79,7 @@ def updatemarks():
             if res.status_code == 200:
 
                 jdata = res.json().get('values')
-                
+                        
 
                 header = jdata[0]
                 name_index = header.index('STUDENTS NAME')
@@ -91,11 +94,19 @@ def updatemarks():
                     'SUBJECT': SUBJECT,
                     'SCORE': row[subject_index]
                 } for row in jdata[1:] if row[class_index] == CLASS]
-        
+
+                html = render_template('updatemarks.html', data=data)
+                soup=BeautifulSoup(html,"lxml")
+                content=soup.body.find('div',{'id':'marksTable'}).decode_contents()
+
+                return jsonify({"html":str(content)})
+            
         return render_template('updatemarks.html', data=data, classes=classes)
 
     else:
         return redirect(url_for('login'))
+        
+
 
 
 @app.route('/update', methods=['POST'])
@@ -119,74 +130,20 @@ def update():
     except Exception as e:
         return jsonify({"STATUS": "FAILED", "ERROR": str(e)})
 
+
+
 @app.route('/view', methods=['GET', 'POST'])
 def ViewData():
     data = StudentsDB.query.all()
     return render_template('viewdata.html',data=data)
 
 
+@app.route('/test', methods=["GET", "POST"])
+def test():
+    error="NO"
+    print(render_template('login.html', error=error))
+    return "Hello"
+
+
 if __name__ == '__main__':
     app.run(debug=True)
-    
-"""
-GOOGLE_SHEETS_URL = "https://sheets.googleapis.com/v4/spreadsheets/1yGyqIyDWtaVK1z2LbvvtEDl1YpeIgWMwuAyUcIdr3Cc/values/Sheet1?key=AIzaSyCunanUcxEoloBYJR1EqhkD16-uWAxlQzY"
-
-@app.route('/getData/<CLASS>/<SUBJECT>',methods=['GET','POST'])
-def getData(CLASS, SUBJECT):
-    response = requests.get(GOOGLE_SHEETS_URL)
-
-    if response.status_code == 200:
-        jdata = response.json().get('values')
-        df = pd.DataFrame(jdata[1:], columns=jdata[0])
-        exam=f"FA1_{SUBJECT}"
-
-        filtered_df = df[df['CLASS'] == CLASS]
-        data = filtered_df[['CLASS', 'ROLL', exam]].to_dict(orient='records')
-        return jsonify(data)
-    else:
-        return "Failed"
-    return f"Class is {CLASS}"
-
-
-
-function SelectFunc() {
-          const CLASS = document.getElementById("Class").value;
-          const SUBJECT = document.getElementById("Subject").value;
-
-          if (SUBJECT !== "Subject" && CLASS !== "Class") {
-
-            fetch(`/getData/${CLASS}/${SUBJECT}`,{method: 'GET',
-                 headers: {
-                     'Content-Type': 'application/json'}
-                 })
-            .then(response => response.json())
-            .then(data => {
-              creatingRows(data, SUBJECT)
-              onEnter()
-            })
-            console.log("Hii there")
-          }
-
-
-        }  
-
-
-
-
-function onEnter(rows) {
-        focusedInput = document.activeElement
-
-        if (focusedInput && focusedInput.tagName === 'INPUT') {
-
-        focusedInput.addEventListener("keydown", (event) => {
-
-            if (event.key === "Enter") {
-                event.preventDefault()
-                button=focusedInput.nextElementSibling
-                submit(button)
-
-
-            }
-        });
-    }
-}"""
