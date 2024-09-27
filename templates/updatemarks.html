@@ -35,45 +35,51 @@
 
 <script src="{{ url_for('static', filename='upsatemarks.js') }}"></script>
 
-<form id="selectionForm" method="POST" action="/updatemarks">
+
+<div class="container">
   <div class="row mb-3">
-    
-    <div class="col">  
-      <select class="form-select form-select-lg" id="Class" name="selectClass">
-        <option selected value="Class">Class</option>
+    <div class="col-12 col-md-4 mb-2">
+      <select class="form-select form-select-lg" id="Class" name="selectClass" required>
+        <option selected value="">Class</option>
         {% for cls in classes %}
           <option value="{{ cls }}">{{ cls }}</option>
         {% endfor %}
       </select>
     </div>
-    <div class="col">
-      <select class="form-select form-select-lg" id="Subject" name="selectSubject">
-        <option selected value="Subject">Subject</option>
+    <div class="col-12 col-md-4 mb-2">
+      <select class="form-select form-select-lg" id="Subject" name="selectSubject" required>
+        <option selected value="">Subject</option>
         <option value="ENGLISH">English</option>
         <option value="HINDI">Hindi</option>
         <option value="MATH">Math</option>
         <option value="URDU">Urdu</option>
         <option value="DEENIYAT">Deniyaat</option>
         <option value="SCIENCE">Science</option>
-        <option value="COMPUTER"">Computer</option>
+        <option value="COMPUTER">Computer</option>
         <option value="GK">GK</option>
         <option value="SST">EVS / SST</option>
         <option value="DRAWING">Drawing</option>
       </select>
     </div>
-    <div class="col">
-      <select class="form-select form-select-lg" id="Exam" name="selectExam">
-        <option name="FA1">FA1</option>
-        <option disabled name="SA1">SA1</option>
-        <option disabled name="FA2">FA2</option>
-        <option disabled name="SA2">SA2</option>
+    <div class="col-12 col-md-4 mb-2">
+      <select class="form-select form-select-lg" id="Exam" name="selectExam" required>
+        <option selected value="">Exam</option>
+        <option value="FA1">FA1</option>
+        <option disabled value="SA1">SA1</option>
+        <option disabled value="FA2">FA2</option>
+        <option disabled value="SA2">SA2</option>
       </select>
     </div>
-    <button type="submit" id="submitButton" style="display:none;">Submit</button>
   </div>
-  
-</form>
-<div class="container-lg table-responsive">
+  <div class="text-center d-grid gap-2 col-6 mx-auto">
+    <button type="button" class="btn btn-primary btn-lg mb-3" 
+            onclick="submitData()" 
+            id="submitButton">Submit</button>
+  </div>
+</div>
+
+
+<div class="container-lg table-responsive" id="marksTable">
   <table class="table table-bordered table-striped table-hover">
     <thead class="thead-dark">
       <tr id="tableRow">
@@ -107,4 +113,22 @@
     </tbody>
   </table>
 </div>
+
+<script>
+  function submitData() {
+    // Get selected values
+    const selectedClass = document.getElementById("Class").value;
+    const selectedSubject = document.getElementById("Subject").value;
+    const selectedExam = document.getElementById("Exam").value;
+
+    // Check if any select box is not selected
+    if (selectedClass === "" || selectedSubject === "" || selectedExam === "") {
+      alert("Please select all options before submitting.");
+      return;
+    }
+
+    // Call the updateMarks function with the selected values
+    updateMarks('/updatenumber', 'marksTable', { subject: selectedSubject, class: selectedClass, exam: selectedExam });
+  }
+</script>
 {% endblock %}
