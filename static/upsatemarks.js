@@ -4,10 +4,10 @@ document.addEventListener("DOMContentLoaded", function() {
         var subject = document.getElementById("Subject");
         var subjectOptions = subject.options;
         var disableSubjects = ['SCIENCE', 'COMPUTER', 'GK', 'SST', 'DRAWING'];
-        var disableClasses = ['NC', 'LKG', 'UKG'];
+        var disableClasses = ['Nursery/KG/PP3', 'LKG/KG1/PP2', 'UKG/KG2/PP1'];
         
 
-        // Enable all options first
+        // Enable all subject options first
         for (var i = 0; i < subjectOptions.length; i++) {
             subjectOptions[i].disabled = false;
         }
@@ -36,10 +36,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     option.disabled = true;
                 }
             }
-        }
-
-        if (subject.value !== "Subject" && classValue !== "Class") {
-            document.getElementById("submitButton").click();
         }
     }
 
