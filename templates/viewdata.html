@@ -2,136 +2,73 @@
 {% block title %}Students Data{% endblock %}
 {% block content %}
 
+<div class="container">
+  <div class="row mb-3">
 
+    <div class="col-12 col-md-5 mb-2">
+      <select class="form-select form-select-lg" id="classView" name="selectClass" required onchange="handleClassChange(endpoint,id,event.target.value)">
+        <option selected value="">Class</option>
+        <option value="Nursery/KG/PP3">Nursery/KG/PP3</option>
+        <option value="LKG/KG1/PP2">LKG/KG1/PP2</option>
+        <option value="UKG/KG2/PP1">UKG/KG2/PP1</option>
+        <option value="I">I</option>
+        <option value="II">II</option>
+        <option value="III">III</option>
+        <option value="IV">IV</option>
+        <option value="V">V</option>
+        <option value="VI">VI</option>
+        <option value="VII">VII</option>
+        <option value="VIII">VIII</option>
+      </select>
+    </div>
 
-<div class="container my-4">
-  <!-- Search Box -->
-  <div class="input-group mb-3">
-      <input type="text" id="search-input" class="form-control" placeholder="Search by Name, Class, or Roll Number">
+    <div class="col-12 col-md-5 mb-2">
+      <input type="text" id="search-input" class="form-control form-control-lg" placeholder="Search by Name, Class or Roll Number">
+    </div>
+
+    <div class="col-12 col-md-2 mb-2">
+      <select class="form-select form-select-lg" id="items-per-page" name="itemsPerPage">
+        <option selected value="20">20 items per page</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="500">500</option>
+        <option value="1000">1000</option>
+      </select>
+    </div>
+
   </div>
 
-  <!-- Desktop view (visible on md and larger screens) -->
+  <!-- Unified Card View for All Screen Sizes -->
   {% if data %}
-  <div class="d-none d-md-block">
-    <table class="table table-hover mb-0 bg-white" id="desktop-table">
-      <thead class="bg-light">
-        <tr class="text-start">
-          <th>Name</th>
-          <th>CLASS</th>
-          <th>DOB</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for row in data %}
-          <tr class="text-start search-row">
-            <td>
-              <div class="d-flex align-items-center">
-                <img src="{{ row.IMAGE if row.IMAGE else 'https://cdn.pixabay.com/photo/2016/04/22/04/57/graduation-1345143_1280.png' }}"
-                  alt="Student Image"
-                  class="img-fluid rounded-circle" 
-                  style="width: 70px; height: 70px; object-fit: cover; border: 3px solid #fff;">
-                <div class="ms-3">
-                  <p class="fw-bold mb-1">{{ row.STUDENTS_NAME }}</p>
-                  <p class="text-muted mb-0">{{ row.FATHERS_NAME }}</p>
+    <div class="row">
+      {% for row in data %}
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card shadow-lg h-100 border-0" style="border-radius: 12px;">
+            <div class="d-flex align-items-center p-3">
+              <img src="{{ row.IMAGE if row.IMAGE else 'https://cdn.pixabay.com/photo/2016/04/22/04/57/graduation-1345143_1280.png' }}"
+                   alt="Student Image"
+                   class="img-fluid rounded-circle"
+                   style="width: 70px; height: 70px; object-fit: cover; border: 3px solid #fff;">
+              <div class="ms-3 text-start">
+                <p class="fw-bold mb-1">{{ row.STUDENTS_NAME }}</p>
+                <p class="text-muted mb-0">{{ row.FATHERS_NAME }}</p>
+                <p class="fw-bold mt-2">{{ row.CLASS }} - {{ row.ROLL }}</p>
+                <p class="text-muted">{{ row.ADMISSION_NO }}</p>
+                <span class="badge bg-success rounded-pill">{{ row.formatted_dob }}</span>
+                <div class="mt-2">
+                  <a href="tel:{{ row.PHONE }}" class="text-decoration-none">
+                    <i class="fa fa-phone"></i> <strong>{{ row.PHONE }}</strong>
+                  </a>
                 </div>
               </div>
-            </td>
-            <td>
-              <div class="ms-2">
-                <p class="fw-bold mb-1">{{ row.CLASS }} - {{row.ROLL}}</p>
-                <p class="text-muted mb-0">{{ row.ADMISSION_NO }}</p>
-              </div>
-            </td>
-            <td>
-              <span class="badge bg-success rounded-pill">{{ row.formatted_dob }}</span>
-            </td>
-            <td>
-              <a href="tel:{{row.PHONE}}" class="text-decoration-none"> 
-                <i class="fa fa-phone"></i>
-                <strong>{{row.PHONE}}</strong>
-              </a>
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-  {% endif %}
-
-  <!-- Mobile view (visible on sm and smaller screens) -->
-  {% if data %}
-  <div class="d-block d-md-none">
-    {% for row in data %}
-      <div class="card shadow-lg mx-auto my-3 border-0 search-row" style="max-width: 350px; border-radius: 12px;">
-        <div class="d-flex align-items-center">
-          <div class="p-2">
-            <img src="{{ row.IMAGE if row.IMAGE else 'https://cdn.pixabay.com/photo/2016/04/22/04/57/graduation-1345143_1280.png' }}"
-              alt="Student Image"
-              class="img-fluid rounded-circle" 
-              style="width: 70px; height: 70px; object-fit: cover; border: 3px solid #fff;">
-          </div>
-          <div class="p-2 text-start">
-            <table>
-              <tbody>
-                <tr>
-                  <td class="border-bottom pb-3">
-                    <strong style="font-size: 0.85rem; margin-right: 1rem;">Name:</strong>
-                  </td>
-                  <td class="border-bottom pb-3">
-                    <div style="font-size: 1rem;"> 
-                      <strong>{{ row.STUDENTS_NAME }}</strong>
-                    </div>
-                    <div>
-                      <small class="text-muted" style="font-size: 0.75rem;">{{ row.FATHERS_NAME }}</small>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="pb-2">
-                    <strong style="font-size: 0.85rem;">Class:</strong>
-                  </td>
-                  <td class="pb-2">
-                    <div style="font-size: 1rem;">
-                      <strong>{{ row.CLASS }} - {{ row.ROLL }}</strong>
-                    </div>
-                    <div>
-                      <small class="text-muted" style="font-size: 0.75rem;">{{ row.ADMISSION_NO }}</small>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="pb-2">
-                    <strong style="font-size: 0.85rem;">DOB:</strong>
-                  </td>
-                  <td class="pb-2">
-                    <div style="font-size: 1rem;">
-                      <strong>{{ row.formatted_dob }}</strong>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="pb-2">
-                    <strong style="font-size: 0.85rem;">Phone:</strong>
-                  </td>
-                  <td class="pb-2">
-                    <a href="tel:{{row.PHONE}}" class="text-decoration-none"> 
-                      <i class="fa fa-phone"></i>
-                      <strong>{{row.PHONE}}</strong>
-                    </a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            </div>
           </div>
         </div>
-      </div>
-    {% endfor %}
-  </div>
+      {% endfor %}
+    </div>
   {% endif %}
 </div>
 
 <script src="{{ url_for('static', filename='view.js') }}"></script>
-
 
 {% endblock %}
