@@ -6,7 +6,7 @@
   <div class="row mb-3">
 
     <div class="col-12 col-md-5 mb-2">
-      <select class="form-select form-select-lg" id="classView" name="selectClass" required onchange="updateMarks('/view', 'StudentData', { CLASS : this.value });">
+      <select class="form-select form-select-lg" id="classView" name="selectClass" required>
         <option selected value="All">Class</option>
         <option value="Nursery/KG/PP3">Nursery/KG/PP3</option>
         <option value="LKG/KG1/PP2">LKG/KG1/PP2</option>
@@ -48,12 +48,12 @@
               <img src="{{ 'https://lh3.googleusercontent.com/d/' + row.IMAGE + '=s200' if row.IMAGE else 'https://cdn.pixabay.com/photo/2016/04/22/04/57/graduation-1345143_1280.png' }}"
                    alt="Student Image"
                    class="img-fluid rounded-circle"
-                   style="width: 120px; height: 180px; object-fit: cover; object-position: top; border: 2px solid #ffffff">
+                   style="width: 130px; height: 180px; object-fit: cover; object-position: top; border: 2px solid #ffffff">
               <div class="ms-3 text-start">
-                <p class="fw-bold mb-1">{{ row.STUDENTS_NAME }}</p>
-                <p class="text-muted mb-0">{{ row.FATHERS_NAME }}</p>
-                <p class="fw-bold mt-2">{{ row.CLASS }} - {{ row.ROLL }}</p>
-                <p class="text-muted">{{ row.ADMISSION_NO }}</p>
+                <p class="student-name fw-bold mb-0">{{ row.STUDENTS_NAME }}</p>
+                <p class="student-father text-muted mb-0"><small>{{ row.FATHERS_NAME }}</small></p>
+                <p class="student-class-roll fw-bold mt-3">{{ row.CLASS }} - {{ row.ROLL }}</p>
+                <!--<p class="text-muted">{{ row.ADMISSION_NO }}</p>-->
                 <span class="badge bg-success rounded-pill">{{ row.DOB }}</span>
                 <div class="mt-2">
                   <a href="tel:{{ row.PHONE }}" class="text-decoration-none">
@@ -69,6 +69,13 @@
   {% endif %}
 </div>
 
-<script src="{{ url_for('static', filename='view.js') }}"></script>
+<div class="row">
+  <div class="col-12 text-center">
+    <button id="load-more" class="btn btn-primary mt-4" style="display: none;">Load More</button>
+  </div>
+</div>
+
+
+<script src="{{ url_for('static', filename='students.js') }}"></script>
 
 {% endblock %}
