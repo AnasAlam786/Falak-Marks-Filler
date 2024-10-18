@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cards on A4 Paper</title>
+    <link rel="icon" href="static/logo.svg" type="image/svg+xml">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Set the size of the page to A4 in landscape orientation */
+        .a4-page {
+            width: 297mm;
+            height: 210mm;
+            padding: 1.5mm;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0px; /* Space between cards */
+            justify-content: space-between;
+            align-items: center;
+            margin: 0 auto;
+            background-color: #ffffff;}
+
+        /* Set each card to occupy 45% of the page height to fit two cards per row */
+        .card-container {
+            width: 49.8%;
+            height: 49.1%; /* Adjust height to fit two rows */
+        }
+
+        .card {
+            height: 100%;
+            border-radius: 5px;
+            padding: 5px;
+        }
+        
+        .ms-3 p {
+            font-size: 1.1rem;
+        }
+
+        .ms-3 table {
+            font-size: 1.3rem;
+        }
+        
+        .card-header h4 {
+            font-size: 2rem; /* Increase heading font size */
+            font-weight: 950;  /* Make font bold */
+            letter-spacing: 2px; /* Increase spacing between letters */
+            text-transform: uppercase; /* Transform text to uppercase */
+            margin-left: 60px;
+        }
+        
+        .card-header p {
+            font-size: 1.5rem; /* Increase heading font size */
+            font-weight: 500;  /* Make font bold */
+        }
+        
+        .card-header img.logo {
+            position: absolute;
+            left: 0; /* Align the logo to the left */
+            object-fit: contain;
+            width: 90px;
+            height: 90px;
+            margin-left: 10px;
+            margin-top: 5px;
+            
+        }
+
+        tr td {
+        padding: 5px; /* Optional padding for cell spacing */
+    }
+        
+    </style>
+</head>
+<body>
+    {% for groups in data %}
+        <div class="a4-page">
+            {% for student in groups %}
+                <div class="card-container">
+                    <div class="card border-3">
+                        <div class="card-header text-center bg-transparent border-0 p-2">
+                        <img src = {{ logo }} alt="School Logo" class="logo">
+                            <h4 class="fw-bold mt-2 mb-0">{{ school }}</h4>
+                            <p class="text-muted">Admit Card {{ exam }} {{ year }}</p>
+                            <hr>
+                        </div>
+                        <div class="d-flex align-items-center p-1 mb-0" style="margin-top: -8px;">
+                            <img src="{{ 'https://lh3.googleusercontent.com/d/' + student.IMAGE + '=s'+ quality if student.IMAGE else 'https://cdn.pixabay.com/photo/2016/04/22/04/57/graduation-1345143_1280.png' }}"
+                                alt="Student Image"
+                                class="img-fluid rounded-circle"
+                                style="width: 150px; height: 200px; object-fit: cover; object-position: top; border: 2px solid #808080">
+                                <div class="ms-3 text-start">
+                                    <table class="w-100">
+                                        <tr style="padding-bottom: 50px;">
+                                            <td class="fw-bold">Name</td>
+                                            <td>{{ student.STUDENTS_NAME }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">F/N</td>
+                                            <td>{{ student.FATHERS_NAME }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">Class</td>
+                                            <td>{{ student.CLASS }} - {{ student.ROLL }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">DOB</td>
+                                            <td>{{ student.DOB }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold"><i class="fa fa-phone"></i> Phone</td>
+                                            <td>{{ student.PHONE }}</td>
+                                        </tr>
+                                    </table>
+                                </div> 
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+</body>
+</html>
