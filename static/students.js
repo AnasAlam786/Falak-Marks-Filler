@@ -28,11 +28,14 @@ document.addEventListener('DOMContentLoaded', function () {
     filteredStudents = studentCards.filter(function (student) {
       const studentName = student.querySelector('.student-name').textContent.toLowerCase();
       const studentClassRoll = student.querySelector('.student-class-roll').textContent.toLowerCase();
+      const studentFather = student.querySelector('.student-father').textContent.toLowerCase();
       const studentClass = studentClassRoll.split(' - ')[0];
 
-      // Filter logic: match class and name/roll search
+      // Filter logic: match class and name/roll/father's name search
       const classMatch = selectedClass === 'all' || studentClass === selectedClass;
-      const searchMatch = studentName.includes(searchText) || studentClassRoll.includes(searchText);
+      const searchMatch = studentName.includes(searchText) ||
+                          studentClassRoll.includes(searchText) ||
+                          studentFather.includes(searchText);
 
       return classMatch && searchMatch;
     });
