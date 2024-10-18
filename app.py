@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 import json
 from requests import get
 from werkzeug.security import check_password_hash
-from model import db, TeachersLogin, StudentsDB
+from model import db, TeachersLogin, StudentsDB, StudentData
 from bs4 import BeautifulSoup
 
 load_dotenv()
@@ -67,11 +67,11 @@ def updatemarks():
         data = None
 
         if request.method == "POST":
-            data = request.json
+            payload = request.json
 
-            SUBJECT =  data.get('subject')
-            CLASS = data.get('class')
-            EXAM = data.get('exam')
+            SUBJECT =  payload.get('subject')
+            CLASS = payload.get('class')
+            EXAM = payload.get('exam')
 
             url = f"https://sheets.googleapis.com/v4/spreadsheets/{SPREADSHEET_ID}/values/Sheet1?key={api}"
 
@@ -112,24 +112,23 @@ def updatemarks():
 @app.route('/update', methods=['POST'])
 def update():
 
-    data = request.json
+    payload = request.json
 
-    if (data["value"]) == "":
-        body = {'values': [[data["value"]]]}
+    if (payload["value"]) == "":
+        body = {'values': [[payload["value"]]]}
     else:
-        body = {'values': [[int(data["value"])]]}
+        body = {'values': [[int(payload["value"])]]}
 
     try:
         result = service.spreadsheets().values().update(
             spreadsheetId=SPREADSHEET_ID,
-            range=data["range"],
+            range=payload["range"],
             valueInputOption='RAW',
             body=body).execute()
         return jsonify({"STATUS": "SUCCESS"})
 
     except Exception as e:
         return jsonify({"STATUS": "FAILED", "ERROR": str(e)})
-
 
 
 @app.route('/view', methods=['GET', 'POST'])
@@ -162,11 +161,38 @@ def ViewData():
     return render_template('viewdata.html',data=data)
 
 
-@app.route('/test', methods=["GET", "POST"])
-def test():
-    error="NO"
-    print(render_template('login.html', error=error))
-    return "Hello"
+@app.route('/entrycard')
+def entryCard():
+
+
+    data = StudentData("STUDENTS_NAME","FATHERS_NAME","CLASS","ROLL","DOB","PHONE","IMAGE")
+    print(type(data[0].DOB))
+
+    data = [data[i:i + 4] for i in range(0, len(data), 4)]
+
+
+    logo='https://lh3.googleusercontent.com/d/1w4v4yf1NTRjrzoyYnA3PTEShS7rBaQiY=s300'
+    school="FALAK PUBLIC SCHOOL"
+    year="2024-25"
+    exam="SA1"
+    quality = "200"
+
+    return render_template('admit.html', data=data, school=school, year=year, exam=exam, logo=logo,quality=quality)
+
+
+
+@app.route('/seatChits')
+def seatChits():
+
+
+    result = StudentData("STUDENTS_NAME","FATHERS_NAME","CLASS","ROLL")
+
+    fitlerData = [row for row in result if row.CLASS not in ['Nursery/KG/PP3', 'LKG/KG1/PP2','UKG/KG2/PP1']]
+
+    data = [fitlerData[i:i + 28] for i in range(0, len(fitlerData), 28)]
+    
+
+    return render_template('seatChits.html', data=data)
 
 
 if __name__ == '__main__':
