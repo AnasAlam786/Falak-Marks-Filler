@@ -184,11 +184,8 @@ def entryCard():
 @app.route('/seatChits')
 def seatChits():
 
-
     result = StudentData("STUDENTS_NAME","FATHERS_NAME","CLASS","ROLL")
-
     fitlerData = [row for row in result if row.CLASS not in ['Nursery/KG/PP3', 'LKG/KG1/PP2','UKG/KG2/PP1']]
-
     data = [fitlerData[i:i + 28] for i in range(0, len(fitlerData), 28)]
     
 
