@@ -26,9 +26,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const searchText = searchInput.value.toLowerCase();
 
     filteredStudents = studentCards.filter(function (student) {
-      const studentName = student.querySelector('#student-name').textContent.toLowerCase();
-      const studentClassRoll = student.querySelector('#student-class-roll').textContent.toLowerCase();
-      const studentFather = student.querySelector('#student-father').textContent.toLowerCase();
+      const studentName = student.querySelector('#studentName').textContent.toLowerCase();
+      const studentFather = student.querySelector('#studentFather').textContent.toLowerCase();
+      const studentClassRoll = student.querySelector('#studenClassRoll').textContent.toLowerCase();
       console.log(studentFather)
       const studentClass = studentClassRoll.split(' - ')[0];
 
