@@ -134,7 +134,31 @@ def update():
 
 @app.route('/view', methods=['GET', 'POST'])
 def ViewData():
-    data = StudentsDB.query.all()
+    # Check if the serialized data is already in the session
+    data = StudentData("STUDENTS_NAME","DOB","CLASS","ROLL","PHONE","IMAGE","ADMISSION_NO","FATHERS_NAME")
+
+    if request.method == "POST":
+        payload = request.json
+
+        CLASS =  payload.get('CLASS')
+
+        if CLASS=="All":
+            html = render_template('viewdata.html', data=data)
+            soup=BeautifulSoup(html,"lxml")
+            content=soup.body.find('div',{'id':'StudentData'}).decode_contents()
+
+            return jsonify({"html":str(content)})
+
+        else:
+            data = [row for row in data if row.CLASS == CLASS]
+
+            html = render_template('viewdata.html', data=data)
+            soup=BeautifulSoup(html,"lxml")
+            content=soup.body.find('div',{'id':'StudentData'}).decode_contents()
+
+            return jsonify({"html":str(content)})
+
+
     return render_template('viewdata.html',data=data)
 
 
