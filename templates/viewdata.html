@@ -6,19 +6,19 @@
   <div class="row mb-3">
 
     <div class="col-12 col-md-5 mb-2">
-      <select class="form-select form-select-lg" id="classView" name="selectClass" required onchange="handleClassChange(endpoint,id,event.target.value)">
-        <option selected value="">Class</option>
+      <select class="form-select form-select-lg" id="classView" name="selectClass" required onchange="updateMarks('/view', 'StudentData', { CLASS : this.value });">
+        <option selected value="All">Class</option>
         <option value="Nursery/KG/PP3">Nursery/KG/PP3</option>
         <option value="LKG/KG1/PP2">LKG/KG1/PP2</option>
         <option value="UKG/KG2/PP1">UKG/KG2/PP1</option>
-        <option value="I">I</option>
-        <option value="II">II</option>
-        <option value="III">III</option>
-        <option value="IV">IV</option>
-        <option value="V">V</option>
-        <option value="VI">VI</option>
-        <option value="VII">VII</option>
-        <option value="VIII">VIII</option>
+        <option value="1st">1st</option>
+        <option value="2nd">2nd</option>
+        <option value="3rd">3rd</option>
+        <option value="4th">4th</option>
+        <option value="5th">5th</option>
+        <option value="6th">6th</option>
+        <option value="7th">7th</option>
+        <option value="8th">8th</option>
       </select>
     </div>
 
@@ -40,12 +40,12 @@
 
   <!-- Unified Card View for All Screen Sizes -->
   {% if data %}
-    <div class="row">
+    <div class="row" id="StudentData">
       {% for row in data %}
         <div class="col-md-6 col-lg-4 mb-4">
           <div class="card shadow-lg h-100 border-0" style="border-radius: 12px;">
             <div class="d-flex align-items-center p-3">
-              <img src="{{ row.IMAGE if row.IMAGE else 'https://cdn.pixabay.com/photo/2016/04/22/04/57/graduation-1345143_1280.png' }}"
+              <img src="{{ 'https://lh3.googleusercontent.com/d/' + row.IMAGE + '=s200' if row.IMAGE else 'https://cdn.pixabay.com/photo/2016/04/22/04/57/graduation-1345143_1280.png' }}"
                    alt="Student Image"
                    class="img-fluid rounded-circle"
                    style="width: 70px; height: 70px; object-fit: cover; border: 3px solid #fff;">
@@ -54,7 +54,7 @@
                 <p class="text-muted mb-0">{{ row.FATHERS_NAME }}</p>
                 <p class="fw-bold mt-2">{{ row.CLASS }} - {{ row.ROLL }}</p>
                 <p class="text-muted">{{ row.ADMISSION_NO }}</p>
-                <span class="badge bg-success rounded-pill">{{ row.formatted_dob }}</span>
+                <span class="badge bg-success rounded-pill">{{ row.DOB }}</span>
                 <div class="mt-2">
                   <a href="tel:{{ row.PHONE }}" class="text-decoration-none">
                     <i class="fa fa-phone"></i> <strong>{{ row.PHONE }}</strong>
