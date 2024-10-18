@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const studentName = student.querySelector('.student-name').textContent.toLowerCase();
       const studentClassRoll = student.querySelector('.student-class-roll').textContent.toLowerCase();
       const studentFather = student.querySelector('.student-father').textContent.toLowerCase();
+      console.log(studentFather)
       const studentClass = studentClassRoll.split(' - ')[0];
 
       // Filter logic: match class and name/roll/father's name search
