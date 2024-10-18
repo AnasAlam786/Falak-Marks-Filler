@@ -131,8 +131,8 @@ def update():
         return jsonify({"STATUS": "FAILED", "ERROR": str(e)})
 
 
-@app.route('/view', methods=['GET', 'POST'])
-def ViewData():
+@app.route('/students', methods=['GET', 'POST'])
+def studentsData():
     # Check if the serialized data is already in the session
     data = StudentData("STUDENTS_NAME","DOB","CLASS","ROLL","PHONE","IMAGE","ADMISSION_NO","FATHERS_NAME")
 
@@ -142,7 +142,7 @@ def ViewData():
         CLASS =  payload.get('CLASS')
 
         if CLASS=="All":
-            html = render_template('viewdata.html', data=data)
+            html = render_template('students.html', data=data)
             soup=BeautifulSoup(html,"lxml")
             content=soup.body.find('div',{'id':'StudentData'}).decode_contents()
 
@@ -151,14 +151,14 @@ def ViewData():
         else:
             data = [row for row in data if row.CLASS == CLASS]
 
-            html = render_template('viewdata.html', data=data)
+            html = render_template('students.html', data=data)
             soup=BeautifulSoup(html,"lxml")
             content=soup.body.find('div',{'id':'StudentData'}).decode_contents()
 
             return jsonify({"html":str(content)})
 
 
-    return render_template('viewdata.html',data=data)
+    return render_template('students.html',data=data)
 
 
 @app.route('/entrycard')
