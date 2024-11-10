@@ -49,16 +49,16 @@
     <div class="col-12 col-md-4 mb-2">
       <select class="form-select form-select-lg" id="Subject" name="selectSubject" required>
         <option selected value="">Subject</option>
-        <option value="ENGLISH">English</option>
-        <option value="HINDI">Hindi</option>
-        <option value="MATH">Math</option>
-        <option value="URDU">Urdu</option>
-        <option value="DEENIYAT">Deniyaat</option>
-        <option value="SCIENCE">Science</option>
-        <option value="COMPUTER">Computer</option>
+        <option value="English">English</option>
+        <option value="Hindi">Hindi</option>
+        <option value="Math">Math</option>
+        <option value="Urdu">Urdu</option>
+        <option value="Deeniyat">Deeniyat</option>
+        <option value="Science">Science</option>
+        <option value="Computer">Computer</option>
         <option value="GK">GK</option>
         <option value="SST">EVS / SST</option>
-        <option value="DRAWING">Drawing</option>
+        <option value="Drawing">Drawing</option>
       </select>
     </div>
     <div class="col-12 col-md-4 mb-2">
@@ -93,16 +93,15 @@
       {% if data %}
       {% for row in data %}
       <tr>
-        <td data-label="Name">{{ row.NAME }}</td>
+        <td data-label="Name">{{ row.STUDENTS_NAME }}</td>
         <td data-label="Class">{{ row.CLASS }}</td>
         <td data-label="Roll no">{{ row.ROLL }}</td>
         
         <td>
           <div class="input-group">
             <input type="number" inputmode="numeric" 
-              placeholder="{{ row.SUBJECT }} MARKS" class="form-control" 
-              onfocus="this.select()" value="{{ row.SCORE }}" 
-              studentclass="{{ row.CLASS }}" roll="{{ row.ROLL }}" exam="{{ row.EXAM }}_{{ row.SUBJECT }}">
+              placeholder="{{ SUBJECT }} Marks" class="form-control" 
+              onfocus="this.select()" value="{{ row[EXAM][SUBJECT] }}" student_id="{{ row.id }}" exam = "{{ EXAM }}" subject="{{ SUBJECT }}">
             <button type="submit" class="btn btn-primary" 
               onclick="submit(this.previousElementSibling)">SUBMIT</button>
           </div>
@@ -128,7 +127,7 @@
     }
 
     // Call the updateMarks function with the selected values
-    updateMarks('/updatemarks', 'marksTable', { subject: selectedSubject, class: selectedClass, exam: selectedExam });
+    updatePage('/updatemarks', 'marksTable', { subject: selectedSubject, class: selectedClass, exam: selectedExam });
   }
 </script>
 {% endblock %}
