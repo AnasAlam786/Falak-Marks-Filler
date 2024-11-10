@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import func, case
+from sqlalchemy.orm.attributes import flag_modified
+
 
 db = SQLAlchemy()
 
@@ -36,13 +37,31 @@ class StudentsDB(db.Model):
     MOTHERS_NAME = db.Column(db.Text)
     Intialised_at_SDMS = db.Column(db.Text)
     ADMISSION_NO = db.Column(db.Integer)
-    ADNISSION_DATE = db.Column(db.Date)
+    ADMISSION_DATE = db.Column(db.Date)
+    FA1 = db.Column(db.JSON)
+    SA1 = db.Column(db.JSON)
+    FA2 = db.Column(db.JSON)
+    SA2 = db.Column(db.JSON)
 
     __table_args__ = (
         db.Index('idx_class_roll', 'CLASS', 'ROLL'),
     )
 
-def StudentData(*args):
+def updateScore(id, exam, subject, score):
+    student = StudentsDB.query.filter_by(id=id).first()
+
+    if student:
+        student_data = getattr(student, exam)  # Retrieve the JSON object
+        student_data[subject] = score  # Modify the JSON object with the new score
+        setattr(student, exam, student_data)  # Reassign the modified JSON back to the column
+        flag_modified(student, exam)  # Flag the JSON column as modified
+        db.session.commit()
+        return "SUCCESS"
+    else:
+        return "FAILED"
+
+def StudentData(*args, class_filter_json=None):
+    # Class order mapping for post-query sorting
     class_order_mapping = {
         'Nursery/KG/PP3': 1, 'LKG/KG1/PP2': 2,
         'UKG/KG2/PP1': 3, '1st': 4,
@@ -51,25 +70,27 @@ def StudentData(*args):
         '6th': 9, '7th': 10, '8th': 11
     }
 
-    # Prepare the case expression for class ordering
-    order_case = case(
-        *[(StudentsDB.CLASS == class_name, order) for class_name, order in class_order_mapping.items()]
+    # Determine columns to select; include 'CLASS' by default
+    selected_columns = [getattr(StudentsDB, col) for col in args if hasattr(StudentsDB, col)] or list(StudentsDB.__table__.columns)
+    if StudentsDB.CLASS not in selected_columns:
+        selected_columns.append(StudentsDB.CLASS)
+
+    # Construct query with selected columns
+    query = StudentsDB.query.with_entities(*selected_columns)
+
+    # Apply class filter if provided
+    if class_filter_json and 'CLASS' in class_filter_json:
+        query = query.filter(StudentsDB.CLASS.in_(class_filter_json['CLASS']))
+
+    # Order by roll number only to simplify query; class order handled in Python
+    query = query.order_by(StudentsDB.ROLL.asc()).yield_per(1000)
+
+    # Fetch results and perform sorting by class order in Python
+    results = query.all()
+    results_sorted = sorted(
+        results,
+        key=lambda row: (class_order_mapping.get(row.CLASS, float('inf')), row.ROLL)
     )
 
-    # Fetch only the necessary columns or all columns if none are specified
-    selected_columns = [getattr(StudentsDB, col) for col in args] if args else [*StudentsDB.__table__.columns]
-
-    # Format the DOB in SQL query itself
-    formatted_columns = [
-        func.to_char(StudentsDB.DOB, 'Dy, Month DD, YYYY').label('DOB') if col.name == 'DOB' else col
-        for col in selected_columns
-    ]
-
-    # Fetch the results using efficient query
-    results = (StudentsDB.query
-               .with_entities(*formatted_columns)
-               .order_by(order_case, StudentsDB.ROLL.asc())
-               .yield_per(1000)  # Efficiently process data in batches
-               .all())
-
-    return results
+    # Return sorted results without printing them automatically
+    return results_sorted
