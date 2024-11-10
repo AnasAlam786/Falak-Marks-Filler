@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 import json
 from requests import get
 from werkzeug.security import check_password_hash
-from model import db, TeachersLogin, StudentsDB, StudentData
+from model import db, TeachersLogin, StudentData, updateScore
 from bs4 import BeautifulSoup
 
 load_dotenv()
@@ -73,33 +73,13 @@ def updatemarks():
             CLASS = payload.get('class')
             EXAM = payload.get('exam')
 
-            url = f"https://sheets.googleapis.com/v4/spreadsheets/{SPREADSHEET_ID}/values/Sheet1?key={api}"
+            data = StudentData("id","STUDENTS_NAME","ROLL",EXAM, class_filter_json = {"CLASS": [CLASS]})
+ 
+            html = render_template('updatemarks.html', data=data, SUBJECT=SUBJECT, EXAM=EXAM)
+            soup=BeautifulSoup(html,"lxml")
+            content=soup.body.find('div',{'id':'marksTable'}).decode_contents()
 
-            res = get(url)
-            if res.status_code == 200:
-
-                jdata = res.json().get('values')
-                        
-
-                header = jdata[0]
-                name_index = header.index('STUDENTS NAME')
-                class_index = header.index('CLASS')
-                roll_index = header.index('ROLL')
-                subject_index = header.index(f'{EXAM}_{SUBJECT}')
-                data = [{
-                    'CLASS': row[class_index],
-                    'NAME': row[name_index],
-                    'ROLL': row[roll_index],
-                    'EXAM': EXAM,
-                    'SUBJECT': SUBJECT,
-                    'SCORE': row[subject_index]
-                } for row in jdata[1:] if row[class_index] == CLASS]
-
-                html = render_template('updatemarks.html', data=data)
-                soup=BeautifulSoup(html,"lxml")
-                content=soup.body.find('div',{'id':'marksTable'}).decode_contents()
-
-                return jsonify({"html":str(content)})
+            return jsonify({"html":str(content)})
             
         return render_template('updatemarks.html', data=data, classes=classes)
 
@@ -112,30 +92,23 @@ def updatemarks():
 @app.route('/update', methods=['POST'])
 def update():
 
-    payload = request.json
+    data = request.json
+    
+    subject = data.get('subject')
+    exam = data.get('exam')
+    score = data.get('value')
+    id = data.get('id')
 
-    if (payload["value"]) == "":
-        body = {'values': [[payload["value"]]]}
-    else:
-        body = {'values': [[int(payload["value"])]]}
+    resp = updateScore(id, exam, subject, score)
 
-    try:
-        result = service.spreadsheets().values().update(
-            spreadsheetId=SPREADSHEET_ID,
-            range=payload["range"],
-            valueInputOption='RAW',
-            body=body).execute()
-        return jsonify({"STATUS": "SUCCESS"})
-
-    except Exception as e:
-        return jsonify({"STATUS": "FAILED", "ERROR": str(e)})
+    return jsonify({"STATUS": resp})
 
 
 @app.route('/students', methods=['GET', 'POST'])
 def studentsData():
-    # Check if the serialized data is already in the session
     data = StudentData("STUDENTS_NAME","DOB","CLASS","ROLL","PHONE","IMAGE","ADMISSION_NO","FATHERS_NAME")
-
+    
+    
     if request.method == "POST":
         payload = request.json
 
@@ -194,3 +167,4 @@ def seatChits():
 
 if __name__ == '__main__':
     app.run(debug=True)
+    
