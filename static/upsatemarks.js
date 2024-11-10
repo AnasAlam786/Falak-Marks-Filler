@@ -55,32 +55,50 @@ function submit(input) {
         submitBTN.appendChild(spinner);
 
 
-        const CLASS = input.getAttribute("studentclass");
-        const ROLL = input.getAttribute("roll");
-        const EXAM = input.getAttribute("exam");
+        const id = input.getAttribute("student_id");
+        const exam = input.getAttribute("exam");
+        const subject = input.getAttribute("subject");
 
-        Update(rows, CLASS, ROLL, EXAM, input.value).then((res) => {
-
+        fetch("/update", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                id: id,
+                subject: subject,
+                exam: exam,
+                value: input.value
+            })
+        })
+        .then(response => response.json())
+        .then(res => {
             if (res["STATUS"] === "SUCCESS") {
-
-                submitBTN.disabled = false
+                submitBTN.disabled = false;
                 spinner.remove();
-
+        
                 input.classList.remove("is-invalid");
                 input.classList.add("is-valid");
-
-                var nextInput = input.closest('tr').nextElementSibling?.querySelector('input');
-
+        
+                // Move focus to the next input in the table row
+                const nextInput = input.closest('tr').nextElementSibling?.querySelector('input');
+                
                 if (nextInput) {
-                        nextInput.focus();
-                        nextInput.scrollIntoView({
+                    nextInput.focus();
+                    nextInput.scrollIntoView({
                         behavior: "smooth",
                         block: "center",
                         inline: "nearest",
                     });
                 }
-            } else {input.classList.add("is-invalid")}
+            } else {
+                input.classList.add("is-invalid");
+            }
         })
+        .catch(error => {
+            console.error('Error:', error);
+            input.classList.add("is-invalid");
+        });        
     }else {input.classList.add("is-invalid")}
 
 }
@@ -144,7 +162,6 @@ async function loadData() {
   }
 }
 
-loadData().then((fetchData) => {rows = fetchData});
 
 document.addEventListener("keydown", (event) => {
 
