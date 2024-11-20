@@ -1,11 +1,10 @@
-from flask import Flask, render_template, jsonify, request, session, url_for, redirect
+from flask import Flask, render_template, jsonify, request, session, url_for, redirect, make_response
 from google.auth import credentials
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 import os
 from dotenv import load_dotenv
 import json
-from requests import get
 from werkzeug.security import check_password_hash
 from model import db, TeachersLogin, StudentData, updateScore
 from bs4 import BeautifulSoup
@@ -47,11 +46,13 @@ def login():
         dbTeacher = TeachersLogin.query.filter_by(email=email).first()
 
         if dbTeacher and check_password_hash(dbTeacher.password, password):
+
             session['email'] = dbTeacher.email
             session['name'] = dbTeacher.name
             session['classes'] = dbTeacher.classes
             session['ip'] = dbTeacher.ip
             session['role'] = dbTeacher.role
+            session.permanent = True
             return redirect(url_for('updatemarks'))
         else:
             error="Wrong email or password"
@@ -87,8 +88,6 @@ def updatemarks():
         return redirect(url_for('login'))
         
 
-
-
 @app.route('/update', methods=['POST'])
 def update():
 
@@ -106,65 +105,131 @@ def update():
 
 @app.route('/students', methods=['GET', 'POST'])
 def studentsData():
-    data = StudentData("STUDENTS_NAME","DOB","CLASS","ROLL","PHONE","IMAGE","ADMISSION_NO","FATHERS_NAME")
-    
-    
-    if request.method == "POST":
-        payload = request.json
+    if "email" in session:
+        data = StudentData("STUDENTS_NAME","DOB","CLASS","ROLL","PHONE","IMAGE","FATHERS_NAME")
+        
+        if request.method == "POST":
+            payload = request.json
 
-        CLASS =  payload.get('CLASS')
+            CLASS =  payload.get('CLASS')
 
-        if CLASS=="All":
-            html = render_template('students.html', data=data)
-            soup=BeautifulSoup(html,"lxml")
-            content=soup.body.find('div',{'id':'StudentData'}).decode_contents()
+            if CLASS=="All":
+                html = render_template('students.html', data=data)
+                soup=BeautifulSoup(html,"lxml")
+                content=soup.body.find('div',{'id':'StudentData'}).decode_contents()
 
-            return jsonify({"html":str(content)})
+                return jsonify({"html":str(content)})
 
-        else:
-            data = [row for row in data if row.CLASS == CLASS]
+            else:
+                data = [row for row in data if row.CLASS == CLASS]
 
-            html = render_template('students.html', data=data)
-            soup=BeautifulSoup(html,"lxml")
-            content=soup.body.find('div',{'id':'StudentData'}).decode_contents()
+                html = render_template('students.html', data=data)
+                soup=BeautifulSoup(html,"lxml")
+                content=soup.body.find('div',{'id':'StudentData'}).decode_contents()
 
-            return jsonify({"html":str(content)})
+                return jsonify({"html":str(content)})
 
 
-    return render_template('students.html',data=data)
-
+        return render_template('students.html',data=data)
+    else:
+        return redirect(url_for('login'))
 
 @app.route('/entrycard')
 def entryCard():
+    if "email" in session:
+
+        data = StudentData("STUDENTS_NAME","FATHERS_NAME","CLASS","ROLL","DOB","PHONE","IMAGE")
+        print(type(data[0].DOB))
+
+        data = [data[i:i + 4] for i in range(0, len(data), 4)]
 
 
-    data = StudentData("STUDENTS_NAME","FATHERS_NAME","CLASS","ROLL","DOB","PHONE","IMAGE")
-    print(type(data[0].DOB))
+        logo='https://lh3.googleusercontent.com/d/1w4v4yf1NTRjrzoyYnA3PTEShS7rBaQiY=s300'
+        school="FALAK PUBLIC SCHOOL"
+        year="2024-25"
+        exam="SA1"
+        quality = "200"
 
-    data = [data[i:i + 4] for i in range(0, len(data), 4)]
-
-
-    logo='https://lh3.googleusercontent.com/d/1w4v4yf1NTRjrzoyYnA3PTEShS7rBaQiY=s300'
-    school="FALAK PUBLIC SCHOOL"
-    year="2024-25"
-    exam="SA1"
-    quality = "200"
-
-    return render_template('admit.html', data=data, school=school, year=year, exam=exam, logo=logo,quality=quality)
-
-
+        return render_template('admit.html', data=data, school=school, year=year, exam=exam, logo=logo,quality=quality)
+    else:
+        return redirect(url_for('login'))
 
 @app.route('/seatChits')
 def seatChits():
-
-    result = StudentData("STUDENTS_NAME","FATHERS_NAME","CLASS","ROLL")
-    fitlerData = [row for row in result if row.CLASS not in ['Nursery/KG/PP3', 'LKG/KG1/PP2','UKG/KG2/PP1']]
-    data = [fitlerData[i:i + 28] for i in range(0, len(fitlerData), 28)]
-    
-
-    return render_template('seatChits.html', data=data)
-
+    if "email" in session:
+        result = StudentData("STUDENTS_NAME","FATHERS_NAME","CLASS","ROLL")
+        fitlerData = [row for row in result if row.CLASS not in ['Nursery/KG/PP3', 'LKG/KG1/PP2','UKG/KG2/PP1']]
+        data = [fitlerData[i:i + 28] for i in range(0, len(fitlerData), 28)]
+        
+        return render_template('seatChits.html', data=data)
+    else:
+        return redirect(url_for('login'))
 
 if __name__ == '__main__':
     app.run(debug=True)
-    
+
+
+
+
+"""
+GOOGLE_SHEETS_URL = "https://sheets.googleapis.com/v4/spreadsheets/1yGyqIyDWtaVK1z2LbvvtEDl1YpeIgWMwuAyUcIdr3Cc/values/Sheet1?key=AIzaSyCunanUcxEoloBYJR1EqhkD16-uWAxlQzY"
+
+@app.route('/getData/<CLASS>/<SUBJECT>',methods=['GET','POST'])
+def getData(CLASS, SUBJECT):
+    response = requests.get(GOOGLE_SHEETS_URL)
+
+    if response.status_code == 200:
+        jdata = response.json().get('values')
+        df = pd.DataFrame(jdata[1:], columns=jdata[0])
+        exam=f"FA1_{SUBJECT}"
+
+        filtered_df = df[df['CLASS'] == CLASS]
+        data = filtered_df[['CLASS', 'ROLL', exam]].to_dict(orient='records')
+        return jsonify(data)
+    else:
+        return "Failed"
+    return f"Class is {CLASS}"
+
+
+
+function SelectFunc() {
+          const CLASS = document.getElementById("Class").value;
+          const SUBJECT = document.getElementById("Subject").value;
+
+          if (SUBJECT !== "Subject" && CLASS !== "Class") {
+
+            fetch(`/getData/${CLASS}/${SUBJECT}`,{method: 'GET',
+                 headers: {
+                     'Content-Type': 'application/json'}
+                 })
+            .then(response => response.json())
+            .then(data => {
+              creatingRows(data, SUBJECT)
+              onEnter()
+            })
+            console.log("Hii there")
+          }
+
+
+        }  
+
+
+
+
+function onEnter(rows) {
+        focusedInput = document.activeElement
+
+        if (focusedInput && focusedInput.tagName === 'INPUT') {
+
+        focusedInput.addEventListener("keydown", (event) => {
+
+            if (event.key === "Enter") {
+                event.preventDefault()
+                button=focusedInput.nextElementSibling
+                submit(button)
+
+
+            }
+        });
+    }
+}"""
