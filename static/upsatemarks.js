@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function submit(input) {
 
-    if (input.value < 21 && input.value > -1) {
+    if (input.value < 81 && input.value > -1) {
         submitBTN = input.nextElementSibling
         submitBTN.disabled = true
 
