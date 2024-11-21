@@ -1,46 +1,45 @@
-document.addEventListener("DOMContentLoaded", function() {
-    function updateOptions() {
-        var classValue = document.getElementById("Class").value;
-        var subject = document.getElementById("Subject");
-        var subjectOptions = subject.options;
-        var disableSubjects = ['SCIENCE', 'COMPUTER', 'GK', 'SST', 'DRAWING'];
-        var disableClasses = ['Nursery/KG/PP3', 'LKG/KG1/PP2', 'UKG/KG2/PP1'];
-        
+document.addEventListener("DOMContentLoaded", function () {
+    const classDropdown = document.getElementById("Class");
+    const subjectDropdown = document.getElementById("Subject");
 
-        // Enable all subject options first
-        for (var i = 0; i < subjectOptions.length; i++) {
-            subjectOptions[i].disabled = false;
-        }
+    // Define mappings for mutual exclusions
+    const restrictedClasses = ["Nursery/KG/PP3", "LKG/KG1/PP2", "UKG/KG2/PP1"];
+    const restrictedSubjects = ["Science", "Computer", "SST"];
 
-        // Disable options based on class selection
-        if (disableClasses.includes(classValue)) {
-            for (var i = 0; i < subjectOptions.length; i++) {
-                var option = subjectOptions[i];
-                if (disableSubjects.includes(option.value)) {
-                    option.disabled = true;
-                }
-            }
-        }
+    classDropdown.addEventListener("change", function () {
+      const selectedClass = classDropdown.value;
 
-        // Enable all options again before disabling based on subject selection
-        var classOptions = document.getElementById("Class").options;
-        for (var i = 0; i < classOptions.length; i++) {
-            classOptions[i].disabled = false;
-        }
+      // Enable all subject options first
+      Array.from(subjectDropdown.options).forEach(option => {
+        option.disabled = false;
+      });
 
-        var subjectValue = document.getElementById("Subject").value;
-        if (disableSubjects.includes(subjectValue)) {
-            for (var i = 0; i < classOptions.length; i++) {
-                var option = classOptions[i];
-                if (disableClasses.includes(option.value)) {
-                    option.disabled = true;
-                }
-            }
-        }
-    }
+      // Disable restricted subjects if restricted class is selected
+      if (restrictedClasses.includes(selectedClass)) {
+        restrictedSubjects.forEach(subject => {
+          const option = Array.from(subjectDropdown.options).find(opt => opt.value === subject);
+          if (option) option.disabled = true;
+        });
+      }
+    });
 
-    document.getElementById("selectionForm").addEventListener("change", updateOptions);
-});
+    subjectDropdown.addEventListener("change", function () {
+      const selectedSubject = subjectDropdown.value;
+
+      // Enable all class options first
+      Array.from(classDropdown.options).forEach(option => {
+        option.disabled = false;
+      });
+
+      // Disable restricted classes if restricted subject is selected
+      if (restrictedSubjects.includes(selectedSubject)) {
+        restrictedClasses.forEach(cls => {
+          const option = Array.from(classDropdown.options).find(opt => opt.value === cls);
+          if (option) option.disabled = true;
+        });
+      }
+    });
+  });
 
 function submit(input) {
 
