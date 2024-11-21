@@ -43,7 +43,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function submit(input) {
 
-    if (input.value < 81 && input.value > -1) {
+    const exam = input.getAttribute("exam");
+
+    if (
+        ((exam === "FA1" || exam === "FA2") && input.value >= 0 && input.value <= 20) ||
+        ((exam === "SA1" || exam === "SA2") && input.value >= 0 && input.value <= 80)
+      ) {
         submitBTN = input.nextElementSibling
         submitBTN.disabled = true
 
@@ -55,7 +60,6 @@ function submit(input) {
 
 
         const id = input.getAttribute("student_id");
-        const exam = input.getAttribute("exam");
         const subject = input.getAttribute("subject");
 
         fetch("/update", {
