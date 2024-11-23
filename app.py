@@ -18,14 +18,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
-SPREADSHEET_ID = os.getenv('SPREADSHEET_ID')
-credentials = json.loads(os.getenv('CREDENTIALS'))
-api = os.getenv('API_KEY')
-
-SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-creds = Credentials.from_service_account_info(credentials, scopes=SCOPES)
-service = build('sheets', 'v4', credentials=creds)
-
 
 @app.route('/')
 def home():
@@ -37,7 +29,7 @@ def login():
     error=None
     
     if "email" in session:
-        return redirect(url_for('updatemarks'))
+        return redirect(url_for('studentsData'))
 
     if request.method == "POST":
         email = request.form.get('email')
@@ -53,7 +45,7 @@ def login():
             session['ip'] = dbTeacher.ip
             session['role'] = dbTeacher.role
             session.permanent = True
-            return redirect(url_for('updatemarks'))
+            return redirect(url_for('studentsData'))
         else:
             error="Wrong email or password"
 
@@ -165,10 +157,70 @@ def seatChits():
     else:
         return redirect(url_for('login'))
 
+
+@app.route('/marks', methods=["GET","POST"])
+def marks():
+    if "email" in session:
+        Data = None
+
+        if request.method == "POST":
+
+            CLASS = request.json.get('class')
+
+            Data = StudentData("STUDENTS_NAME","ROLL","FATHERS_NAME", "FA1", "FA2", "SA1", "SA2", class_filter_json = {"CLASS": [CLASS]})
+
+            for student in Data:
+            # Add 'Total' to each FA1, FA2, SA1, and SA2
+                for key in ['FA1', 'FA2', 'SA1', 'SA2']:
+                    scores = student[key]
+                    total = sum(int(value) for value in scores.values() if value.isdigit())
+                    scores['Total'] = total
+
+                # Calculate FA1_SA1 (Sum of FA1 and SA1)
+                fa1_sa1 = {}
+                for subject in student['FA1']:
+                    if subject != 'Total':
+                        fa1_value = int(student['FA1'].get(subject, 0)) if student['FA1'].get(subject, '').isdigit() else 0
+                        sa1_value = int(student['SA1'].get(subject, 0)) if student['SA1'].get(subject, '').isdigit() else 0
+                        fa1_sa1[subject] = str(fa1_value + sa1_value)
+                fa1_sa1['Total'] = sum(int(value) for value in fa1_sa1.values() if value.isdigit())
+                student['FA1_SA1'] = fa1_sa1
+
+                # Calculate FA2_SA2 (Sum of FA2 and SA2)
+                fa2_sa2 = {}
+                for subject in student['FA2']:
+                    if subject != 'Total':
+                        fa2_value = int(student['FA2'].get(subject, 0)) if student['FA2'].get(subject, '').isdigit() else 0
+                        sa2_value = int(student['SA2'].get(subject, 0)) if student['SA2'].get(subject, '').isdigit() else 0
+                        fa2_sa2[subject] = str(fa2_value + sa2_value)
+                fa2_sa2['Total'] = sum(int(value) for value in fa2_sa2.values() if value.isdigit())
+                student['FA2_SA2'] = fa2_sa2
+
+                # Calculate Grand_Total (Sum of all scores across FA1, FA2, SA1, and SA2)
+                grand_total = {}
+                for subject in student['FA1']:
+                    if subject != 'Total':
+                        total_value = sum(
+                            int(student[key].get(subject, 0)) if student[key].get(subject, '').isdigit() else 0
+                            for key in ['FA1', 'FA2', 'SA1', 'SA2']
+                        )
+                        grand_total[subject] = str(total_value)
+                grand_total['Total'] = sum(int(value) for value in grand_total.values() if value.isdigit())
+                student['Grand_Total'] = grand_total
+
+            html = render_template('showMarks.html', Data=Data)
+            soup=BeautifulSoup(html,"lxml")
+            content=soup.body.find('div',{'id':'results'}).decode_contents()
+
+            return jsonify({"html":str(content)})
+        
+        return render_template('showMarks.html', Data=Data)
+    
+    else:
+        return redirect(url_for('login'))
+
 if __name__ == '__main__':
     app.run(debug=True)
-
-
 
 
 """
