@@ -211,6 +211,7 @@ def marks():
             html = render_template('showMarks.html', Data=Data)
             soup=BeautifulSoup(html,"lxml")
             content=soup.body.find('div',{'id':'results'}).decode_contents()
+            print(jsonify({"html":str(content)}))
 
             return jsonify({"html":str(content)})
         
