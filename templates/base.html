@@ -21,35 +21,6 @@
         flex: 1;
       }
 
-      @media (max-width: 768px) {
-        .table thead {
-          display: none;
-        }
-        .table, .table tbody, .table tr, .table td {
-          display: block;
-          width: 100%;
-        }
-        .table tr {
-          margin-bottom: 15px;
-          border-bottom: 2px solid #dee2e6;
-        }
-        .table td {
-          display: flex;
-          justify-content: space-between;
-          padding: 0.75rem;
-          border: none;
-          border-bottom: 1px solid #dee2e6;
-          text-align: right;
-        }
-        .table td::before {
-          content: attr(data-label);
-          flex: 1;
-          font-weight: bold;
-          text-align: left;
-          padding-right: 0.75rem;
-        }
-      }
-
       .offcanvas {
         background-color: #1f1f1f;
       }
@@ -103,10 +74,11 @@
         <div class="offcanvas-body">
           <a href="/"><i class="fas fa-home"></i> Home</a>
           <a href="/students"><i class="fas fa-user-graduate"></i> Students Data</a>
-          <a href="/updatemarks"><i class="fas fa-edit"></i> Update Marks</a>
+          <a href="/updatemarks"><i class="fas fa-pencil-alt"></i> Update Marks</a>
+          <a href="/marks"><i class="fas fa-book-open"></i> Show Marks</a>
           <a href="/entrycard"><i class="fas fa-id-card"></i> Entry Card</a>
-          <a href="/seatChits"><i class="fas fa-chair"></i> Seat Chits</a>
-        </div>
+          <a href="/seatChits"><i class="fas fa-chalkboard-teacher"></i> Seat Chits</a>
+        </div>        
       </div>
     
 
