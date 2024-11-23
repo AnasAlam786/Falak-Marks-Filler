@@ -71,8 +71,8 @@ def StudentData(*args, class_filter_json=None):
     }
 
     # Determine columns to select; include 'CLASS' by default
-    selected_columns = [getattr(StudentsDB, col) for col in args if hasattr(StudentsDB, col)] or list(StudentsDB.__table__.columns)
-    if StudentsDB.CLASS not in selected_columns:
+    selected_columns = [getattr(StudentsDB, col) for col in args if hasattr(StudentsDB, col)]
+    if not any(col.key == 'CLASS' for col in selected_columns):
         selected_columns.append(StudentsDB.CLASS)
 
     # Construct query with selected columns
@@ -82,15 +82,19 @@ def StudentData(*args, class_filter_json=None):
     if class_filter_json and 'CLASS' in class_filter_json:
         query = query.filter(StudentsDB.CLASS.in_(class_filter_json['CLASS']))
 
-    # Order by roll number only to simplify query; class order handled in Python
-    query = query.order_by(StudentsDB.ROLL.asc()).yield_per(1000)
+    # Order results directly in the query
+    query = query.order_by(StudentsDB.CLASS.asc(), StudentsDB.ROLL.asc()).yield_per(1000)
 
-    # Fetch results and perform sorting by class order in Python
+    # Fetch all results
     results = query.all()
-    results_sorted = sorted(
-        results,
-        key=lambda row: (class_order_mapping.get(row.CLASS, float('inf')), row.ROLL)
-    )
 
-    # Return sorted results without printing them automatically
-    return results_sorted
+    # Map the selected column names to their values in each row
+    column_names = [col.key for col in selected_columns]  # Get the names of selected columns
+    results_json = [
+        dict(zip(column_names, row)) for row in results
+    ]
+
+    # Sort by class order mapping
+    results_json.sort(key=lambda row: (class_order_mapping.get(row['CLASS'], float('inf')), row['ROLL']))
+
+    return results_json
