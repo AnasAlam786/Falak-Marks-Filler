@@ -4,7 +4,7 @@
 <div class="container my-5">
   <div class="row mb-4">
     <div class="col-md-6 mb-2">
-      <select class="form-select form-select-lg" id="classView" name="selectClass" onchange="updatePage('/marks', 'results', { class: event.target.value });">
+      <select class="form-select form-select-lg" id="classView" name="selectClass" onchange="updatePage('/marks', 'results', { 'class': event.target.value });">
         <option selected value="All">Select Class</option>
         <option value="Nursery/KG/PP3">Nursery/KG/PP3</option>
         <option value="LKG/KG1/PP2">LKG/KG1/PP2</option>
@@ -35,7 +35,7 @@
             <thead>
               <tr>
                 <th class="fs-5">Name</th>
-                <th class="fs-5">F's Name</th>
+                <th class="fs-5">F. Name</th>
                 <th class="fs-5">Class</th>
                 <th class="fs-5">Roll</th>
               </tr>
