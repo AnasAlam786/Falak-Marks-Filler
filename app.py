@@ -1,10 +1,6 @@
-from flask import Flask, render_template, jsonify, request, session, url_for, redirect, make_response
-from google.auth import credentials
-from google.oauth2.service_account import Credentials
-from googleapiclient.discovery import build
+from flask import Flask, render_template, jsonify, request, session, url_for, redirect
 import os
 from dotenv import load_dotenv
-import json
 from werkzeug.security import check_password_hash
 from model import db, TeachersLogin, StudentData, updateScore
 from bs4 import BeautifulSoup
