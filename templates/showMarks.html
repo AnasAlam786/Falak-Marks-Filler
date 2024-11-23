@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container my-5">
+  <div class="row mb-4">
+    <div class="col-md-6 mb-2">
+      <select class="form-select form-select-lg" id="classView" name="selectClass" onchange="updatePage('/marks', 'results', { class: event.target.value });">
+        <option selected value="All">Select Class</option>
+        <option value="Nursery/KG/PP3">Nursery/KG/PP3</option>
+        <option value="LKG/KG1/PP2">LKG/KG1/PP2</option>
+        <option value="UKG/KG2/PP1">UKG/KG2/PP1</option>
+        <option value="1st">1st</option>
+        <option value="2nd">2nd</option>
+        <option value="3rd">3rd</option>
+        <option value="4th">4th</option>
+        <option value="5th">5th</option>
+        <option value="6th">6th</option>
+        <option value="7th">7th</option>
+        <option value="8th">8th</option>
+      </select>
+    </div>
+
+    <div class="col-md-6">
+      <input type="text" id="search-input" class="form-control form-control-lg" placeholder="Search by Name, Class, or Roll Number" onkeyup="searchFunction()">
+    </div>
+  </div>
+
+  <div id="results">
+  {% if Data is not none %}
+    {% for data in Data %}
+    <div class="card shadow-lg mb-4">
+      <div class="card-body">
+        <div class="table-responsive mb-3 border rounded">
+          <table class="table text-center">
+            <thead>
+              <tr>
+                <th class="fs-5">Name</th>
+                <th class="fs-5">F's Name</th>
+                <th class="fs-5">Class</th>
+                <th class="fs-5">Roll</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="studentDetails">
+                <td class="fs-5" style="border: none;">{{ data["STUDENTS_NAME"] }}</td>
+                <td class="fs-5" style="border: none;">{{ data["FATHERS_NAME"] }}</td>
+                <td class="fs-5" style="border: none;">{{ data["CLASS"] }}</td>
+                <td class="fs-5" style="border: none;">{{ data["ROLL"] }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover table-striped align-middle">
+            <thead class="text-center">
+              <tr style="border: 1px solid #ffffff; border-bottom: 1px solid #ffffff; font-weight: bold;" >
+                <th class="fs-5">Sub.</th>
+                <th class="fs-5">FA1</th>
+                <th class="fs-5">SA1</th>
+                <th class="fs-5">H. Yearly</th>
+                <th class="fs-5">FA2</th>
+                <th class="fs-5">SA2</th>
+                <th class="fs-5">Annual</th>
+                <th class="fs-5">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for subject, fa1_score in data['FA1'].items() %}
+              <tr {% if loop.last %} 
+                    style="border-top: 2px solid #ffffff; border-bottom: 1px solid #ffffff; font-weight: bold;" 
+                    class="text-center fs-5"
+                  {% endif %}>
+                <th class="text-start fs-5" style="border-left: 1px solid #ffffff;">{{ subject }}</th>
+                <td class="text-center">{{ fa1_score if fa1_score != '' else '0' }}</td>
+                <td class="text-center">{{ data['SA1'][subject] if data['SA1'][subject] != '' else '0' }}</td>
+                <td class="text-center">{{ data['FA1_SA1'][subject] if data['FA1_SA1'][subject] != '' else '0' }}</td>
+                <td class="text-center">{{ data['FA2'][subject] if data['FA2'][subject] != '' else '0' }}</td>
+                <td class="text-center">{{ data['SA2'][subject] if data['SA2'][subject] != '' else '0' }}</td>
+                <td class="text-center">{{ data['FA2_SA2'][subject] if data['FA2_SA2'][subject] != '' else '0' }}</td>
+                <td class="fs-5 text-center" style="border-left: 2px solid #ffffff; border-right: 1px solid #ffffff; font-weight: bold;">{{ data['Grand_Total'][subject] if data['Grand_Total'][subject] != '' else '0' }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  {% endif %}
+</div>
+</div>
+<script>
+  function searchFunction() {
+    var input, filter, table, rows, td, i, txtValue;
+    input = document.getElementById('search-input');
+    filter = input.value.toLowerCase();
+    tables = document.getElementById('results').children;
+    
+    for (i = 0; i < tables.length; i++) {
+      tables[i].style.display = 'none'; // Hide each row by default
+      td = tables[i].querySelector('#studentDetails').getElementsByTagName('td');
+      
+      for (j = 0; j < td.length; j++) {
+        if (td[j]) {
+          console.log(td[j].innerText)
+          txtValue = td[j].textContent || td[j].innerText;
+          // Search in any column (Name, Father's Name, Class, Roll)
+          if (txtValue.toLowerCase().indexOf(filter) > -1) {
+            tables[i].style.display = ''; // Display the row if match found
+          }
+        }
+      }
+    }
+  }
+  </script>
+{% endblock %}
+
+
