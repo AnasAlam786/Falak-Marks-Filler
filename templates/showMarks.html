@@ -71,7 +71,7 @@
                   {% if subject == 'Total' %}
                     style="border: 2px solid #ffffff; font-weight: bold;"
                   {% endif %}>
-                <th class="text-start {% if subject == 'Total' %} text-danger {% endif %}">{{ subject }}</th>
+                <th class="text-start {% if subject == 'Total' %} text-danger {% endif %}" style="border-left: 1px solid #ffffff;">{{ subject }}</th>
                 <td class="text-center {% if subject == 'Total' %} text-danger {% endif %}">{{ fa1_score if fa1_score != '' else '0' }}</td>
                 <td class="text-center {% if subject == 'Total' %} text-danger {% endif %}">{{ data['SA1'][subject] if data['SA1'][subject] != '' else '0' }}</td>
                 <td class="text-center text-danger">{{ data['FA1_SA1'][subject] if data['FA1_SA1'][subject] != '' else '0' }}</td>
