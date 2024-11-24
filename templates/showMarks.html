@@ -56,29 +56,29 @@
             <thead class="text-center">
               <tr style="border: 1px solid #ffffff; border-bottom: 1px solid #ffffff; font-weight: bold;" >
                 <th class="fs-5">Sub.</th>
-                <th class="fs-5">FA1</th>
-                <th class="fs-5">SA1</th>
-                <th class="fs-5">Total</th>
-                <th class="fs-5">FA2</th>
-                <th class="fs-5">SA2</th>
-                <th class="fs-5">Total</th>
-                <th class="fs-5">G. Total</th>
+                <th class="fs-5 lh-1">FA1 <span class="text-secondary small d-block" style="font-size: 0.9rem;">(20)</span></th>
+                <th class="fs-5 lh-1">SA1 <span class="text-secondary small d-block" style="font-size: 0.9rem;">(80)</span></th>
+                <th class="fs-5 lh-1">Total <span class="text-secondary small d-block" style="font-size: 0.9rem;">(100)</span></th>
+                <th class="fs-5 lh-1">FA2 <span class="text-secondary small d-block" style="font-size: 0.9rem;">(20)</span></th>
+                <th class="fs-5 lh-1">SA2 <span class="text-secondary small d-block" style="font-size: 0.9rem;">(80)</span></th>
+                <th class="fs-5 lh-1">Total <span class="text-secondary small d-block" style="font-size: 0.9rem;">(100)</span></th>
+                <th class="fs-5 lh-1">G. Total <span class="text-secondary small d-block" style="font-size: 0.9rem;">(200)</span></th>
               </tr>
             </thead>
             <tbody>
               {% for subject, fa1_score in data['FA1'].items() %}
-              <tr {% if loop.last %} 
-                    style="border-top: 2px solid #ffffff; border-bottom: 1px solid #ffffff; font-weight: bold;" 
-                    class="text-center fs-5"
+              <tr class="text-center fs-5" 
+                  {% if subject == 'Total' %}
+                    style="border: 2px solid #ffffff; font-weight: bold;"
                   {% endif %}>
-                <th class="text-start fs-5" style="border-left: 1px solid #ffffff;">{{ subject }}</th>
-                <td class="text-center">{{ fa1_score if fa1_score != '' else '0' }}</td>
-                <td class="text-center">{{ data['SA1'][subject] if data['SA1'][subject] != '' else '0' }}</td>
-                <td class="text-center">{{ data['FA1_SA1'][subject] if data['FA1_SA1'][subject] != '' else '0' }}</td>
-                <td class="text-center">{{ data['FA2'][subject] if data['FA2'][subject] != '' else '0' }}</td>
-                <td class="text-center">{{ data['SA2'][subject] if data['SA2'][subject] != '' else '0' }}</td>
-                <td class="text-center">{{ data['FA2_SA2'][subject] if data['FA2_SA2'][subject] != '' else '0' }}</td>
-                <td class="fs-5 text-center" style="border-left: 2px solid #ffffff; border-right: 1px solid #ffffff; font-weight: bold;">{{ data['Grand_Total'][subject] if data['Grand_Total'][subject] != '' else '0' }}</td>
+                <th class="text-start {% if subject == 'Total' %} text-danger {% endif %}">{{ subject }}</th>
+                <td class="text-center {% if subject == 'Total' %} text-danger {% endif %}">{{ fa1_score if fa1_score != '' else '0' }}</td>
+                <td class="text-center {% if subject == 'Total' %} text-danger {% endif %}">{{ data['SA1'][subject] if data['SA1'][subject] != '' else '0' }}</td>
+                <td class="text-center text-danger">{{ data['FA1_SA1'][subject] if data['FA1_SA1'][subject] != '' else '0' }}</td>
+                <td class="text-center {% if subject == 'Total' %} text-danger {% endif %}">{{ data['FA2'][subject] if data['FA2'][subject] != '' else '0' }}</td>
+                <td class="text-center {% if subject == 'Total' %} text-danger {% endif %}">{{ data['SA2'][subject] if data['SA2'][subject] != '' else '0' }}</td>
+                <td class="text-center text-danger">{{ data['FA2_SA2'][subject] if data['FA2_SA2'][subject] != '' else '0' }}</td>
+                <td class="text-center text-danger" style="border-left: 1px solid #ffffff; border-right: 1px solid #ffffff; font-weight: bold;">{{ data['Grand_Total'][subject] if data['Grand_Total'][subject] != '' else '0' }}</td>
               </tr>
               {% endfor %}
             </tbody>
@@ -115,5 +115,3 @@
   }
   </script>
 {% endblock %}
-
-
