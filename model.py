@@ -42,6 +42,7 @@ class StudentsDB(db.Model):
     SA1 = db.Column(db.JSON)
     FA2 = db.Column(db.JSON)
     SA2 = db.Column(db.JSON)
+    Fees = db.Column(db.JSON)
 
     __table_args__ = (
         db.Index('idx_class_roll', 'CLASS', 'ROLL'),
