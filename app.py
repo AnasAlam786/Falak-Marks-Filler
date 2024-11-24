@@ -127,7 +127,6 @@ def entryCard():
     if "email" in session:
 
         data = StudentData("STUDENTS_NAME","FATHERS_NAME","CLASS","ROLL","DOB","PHONE","IMAGE")
-        print(type(data[0].DOB))
 
         data = [data[i:i + 4] for i in range(0, len(data), 4)]
 
@@ -146,7 +145,7 @@ def entryCard():
 def seatChits():
     if "email" in session:
         result = StudentData("STUDENTS_NAME","FATHERS_NAME","CLASS","ROLL")
-        fitlerData = [row for row in result if row.CLASS not in ['Nursery/KG/PP3', 'LKG/KG1/PP2','UKG/KG2/PP1']]
+        fitlerData = [row for row in result if row["CLASS"] not in ['Nursery/KG/PP3', 'LKG/KG1/PP2','UKG/KG2/PP1']]
         data = [fitlerData[i:i + 28] for i in range(0, len(fitlerData), 28)]
         
         return render_template('seatChits.html', data=data)
@@ -217,3 +216,67 @@ def marks():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+"""
+GOOGLE_SHEETS_URL = "https://sheets.googleapis.com/v4/spreadsheets/1yGyqIyDWtaVK1z2LbvvtEDl1YpeIgWMwuAyUcIdr3Cc/values/Sheet1?key=AIzaSyCunanUcxEoloBYJR1EqhkD16-uWAxlQzY"
+
+@app.route('/getData/<CLASS>/<SUBJECT>',methods=['GET','POST'])
+def getData(CLASS, SUBJECT):
+    response = requests.get(GOOGLE_SHEETS_URL)
+
+    if response.status_code == 200:
+        jdata = response.json().get('values')
+        df = pd.DataFrame(jdata[1:], columns=jdata[0])
+        exam=f"FA1_{SUBJECT}"
+
+        filtered_df = df[df['CLASS'] == CLASS]
+        data = filtered_df[['CLASS', 'ROLL', exam]].to_dict(orient='records')
+        return jsonify(data)
+    else:
+        return "Failed"
+    return f"Class is {CLASS}"
+
+
+
+function SelectFunc() {
+          const CLASS = document.getElementById("Class").value;
+          const SUBJECT = document.getElementById("Subject").value;
+
+          if (SUBJECT !== "Subject" && CLASS !== "Class") {
+
+            fetch(`/getData/${CLASS}/${SUBJECT}`,{method: 'GET',
+                 headers: {
+                     'Content-Type': 'application/json'}
+                 })
+            .then(response => response.json())
+            .then(data => {
+              creatingRows(data, SUBJECT)
+              onEnter()
+            })
+            console.log("Hii there")
+          }
+
+
+        }  
+
+
+
+
+function onEnter(rows) {
+        focusedInput = document.activeElement
+
+        if (focusedInput && focusedInput.tagName === 'INPUT') {
+
+        focusedInput.addEventListener("keydown", (event) => {
+
+            if (event.key === "Enter") {
+                event.preventDefault()
+                button=focusedInput.nextElementSibling
+                submit(button)
+
+
+            }
+        });
+    }
+}"""
