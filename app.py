@@ -94,8 +94,11 @@ def update():
 @app.route('/students', methods=['GET', 'POST'])
 def studentsData():
     if "email" in session:
-        data = StudentData("STUDENTS_NAME","DOB","CLASS","ROLL","PHONE","IMAGE","FATHERS_NAME")
+        data = StudentData("id","STUDENTS_NAME","DOB","CLASS","ROLL","PHONE","IMAGE","FATHERS_NAME")
         
+        for student in data:
+            student['DOB'] = student['DOB'].strftime('%d %B %Y')
+            
         if request.method == "POST":
             payload = request.json
 
