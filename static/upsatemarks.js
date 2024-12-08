@@ -106,66 +106,6 @@ function submit(input) {
 
 }
 
-
-
-async function Update(rows, CLASS, ROLL, EXAM, value) {
-    const keys = rows[0]
-    const CLASSIndex = keys.indexOf("CLASS")        
-    const ROLLIndex = keys.indexOf("ROLL")
-
-    const EXAMIndex = keys.indexOf(EXAM)+1  //EXAM HERE.....
-    const rowIndex = rows.findIndex(row => row[CLASSIndex] === CLASS && row[ROLLIndex] == ROLL)+1
-
-    if (CLASSIndex === -1 || ROLLIndex === -1 || EXAMIndex === 0 || rowIndex === 0) {
-        console.error('Error: Invalid CLASS, ROLL, or EXAM column.');
-        return {"STATUS": "FAILED"}}
-
-    console.log(EXAMIndex , rowIndex)
-
-
-    const range = "Sheet1!"+String.fromCharCode(64 + EXAMIndex)+rowIndex
-
-    const toUpdate = {"range": range,"value": value}
-
-    try {
-        const response = await fetch("/update", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(toUpdate)
-        })
-
-        const res = await response.json();
-        return res;
-    } catch (error) {
-        console.error('Error:', error);
-        return {"STATUS": "FAILED"};
-    }
-
-}
-
-
-async function loadData() {
-  var url ="https://sheets.googleapis.com/v4/spreadsheets/1yGyqIyDWtaVK1z2LbvvtEDl1YpeIgWMwuAyUcIdr3Cc/values/Sheet1?key=AIzaSyCunanUcxEoloBYJR1EqhkD16-uWAxlQzY";
-
-  try {
-      const response = await fetch(url);
-      if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const jdata = await response.json();
-      const rows = jdata.values;
-
-
-
-      return rows
-  } catch (error) {
-      console.log(error);
-  }
-}
-
-
 document.addEventListener("keydown", (event) => {
 
     input = document.activeElement
