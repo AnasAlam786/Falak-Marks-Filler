@@ -1,8 +1,15 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm.attributes import flag_modified
 
-
 db = SQLAlchemy()
+
+class FeesDB(db.Model):
+    __tablename__ = 'FeesDB'
+    id = db.Column(db.Integer, primary_key=True)
+    CLASS = db.Column(db.Text, nullable=False)
+    Fee = db.Column(db.Integer, nullable=False)
+
+    
 
 class TeachersLogin(db.Model):
     __tablename__ = 'TeachersLogin'
@@ -47,6 +54,31 @@ class StudentsDB(db.Model):
     __table_args__ = (
         db.Index('idx_class_roll', 'CLASS', 'ROLL'),
     )
+    def to_dict(self):
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
+    
+def updateFees(id, months=None, date=None, extra=None):
+    student = StudentsDB.query.filter_by(id=id).first()
+
+    if student:
+        fees = student.Fees or {}  # Default to empty dict if Fees is None
+
+        if months:
+            for month in months:
+                fees[month] = date
+
+        if extra:
+            fees["Extra"] = int(fees.get("Extra", 0)) + extra
+
+
+        student.Fees = fees  # Explicitly reassign the updated dictionary
+        
+        db.session.add(student)  # Notify SQLAlchemy about the update
+        flag_modified(student, 'Fees')
+        db.session.commit()        
+
+        return "SUCCESS"
+
 
 def updateScore(id, exam, subject, score):
     student = StudentsDB.query.filter_by(id=id).first()
