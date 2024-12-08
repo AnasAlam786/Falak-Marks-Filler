@@ -2,8 +2,9 @@ from flask import Flask, render_template, jsonify, request, session, url_for, re
 import os
 from dotenv import load_dotenv
 from werkzeug.security import check_password_hash
-from model import db, TeachersLogin, StudentData, updateScore
+from model import db, TeachersLogin, StudentData, updateScore, updateFees, StudentsDB, FeesDB
 from bs4 import BeautifulSoup
+import datetime
 
 load_dotenv()
 
@@ -47,6 +48,41 @@ def login():
 
     return render_template('login.html', error=error)
 
+
+
+
+@app.route('/getfees', methods=["GET", "POST"])
+def getfees():
+
+    if request.method == "POST":
+        #Paying Fees
+        req = request.json
+        id = req.get('studentId')
+
+        if req.get('task') =='update':
+            months = req.get('months')
+            current_date = datetime.datetime.now().strftime("%d-%m-%Y")
+
+            resp=updateFees(id, months=months, date=current_date, extra=None)
+            return jsonify({"STATUS": resp})
+        
+        elif req.get('task') =='get':
+            student = StudentsDB.query.filter_by(id=id).first()
+            data=StudentsDB.query.filter_by(PHONE=student.PHONE).all()
+            data=[record.to_dict() for record in data]
+
+            for sibling in data:
+                Fee=FeesDB.query.filter_by(CLASS=sibling["CLASS"]).first().Fee
+                sibling["Fee"]=Fee
+                            
+            monthName =  datetime.datetime.now().strftime("%B")
+            monthIndex=list(data[0]["Fees"].keys()).index(monthName)+1
+
+            html = render_template('feesmodal.html',data=data,currentMonth=monthIndex)
+            soup=BeautifulSoup(html,"lxml")
+            content=soup.body.decode_contents()
+            
+            return jsonify({"html":str(content),"data":data})
 
 @app.route('/updatemarks', methods=["GET", "POST"])
 def updatemarks():
@@ -94,11 +130,14 @@ def update():
 @app.route('/students', methods=['GET', 'POST'])
 def studentsData():
     if "email" in session:
-        data = StudentData("id","STUDENTS_NAME","DOB","CLASS","ROLL","PHONE","IMAGE","FATHERS_NAME")
-        
+        data = StudentData("id","STUDENTS_NAME","DOB","CLASS","ROLL","PHONE","IMAGE","FATHERS_NAME","Fees")
+        """data = StudentsDB.query.with_entities(StudentsDB.STUDENTS_NAME, StudentsDB.DOB, StudentsDB.PHONE, 
+                                              StudentsDB.ROLL, StudentsDB.CLASS, StudentsDB.Fees,
+                                              StudentsDB.id, StudentsDB.IMAGE,StudentsDB.FATHERS_NAME).all()"""
         for student in data:
             student['DOB'] = student['DOB'].strftime('%d %B %Y')
-            
+
+        
         if request.method == "POST":
             payload = request.json
 
