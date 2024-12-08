@@ -82,7 +82,7 @@
 
   let sharedData=null
   function viewStudentDetails(studentId) {
-    new bootstrap.Modal(document.getElementById('exampleModal')).show()
+    new bootstrap.Modal(document.getElementById('feesModal')).show()
     updatePage('/getfees', 'modalBody',   {studentId: studentId, task: 'get' }).then((data) => {
       sharedData=data
     
@@ -144,7 +144,13 @@
 }
 
 function Pay() {
-  if (grandTotal.textContent.trim() === '₹0'){showAlert(message="Please select any month to pay the fees.", type='danger', timeout=4000,element='modal-body'); return}
+  const verifycheck = document.getElementById('verifyCheckbox');
+
+  if(!verifycheck.checked){
+    showAlert(message="First, check the checkbox to confirm payment, then proceed to pay the fees.", type='danger', timeout=4000, element='modal-body 2')
+    return}
+  
+
   const contentSections = document.querySelectorAll('[id^="contentSection"]');
   contentSections.forEach((contentSection, index) => {
 
@@ -179,7 +185,18 @@ function Pay() {
   })
 }
 
-function showAlert(message, type, timeout,element) {
+function verifyModal() {
+  if (grandTotal.textContent.trim() === '₹0'){
+    showAlert(message="You need to select a month in order to pay the fees.", type='danger', timeout=4000,element='modal-body'); return
+  } else {
+    // Hide Modal 1 and Show Modal 2
+    bootstrap.Modal.getInstance(document.getElementById('feesModal')).hide();
+    new bootstrap.Modal(document.getElementById('verify')).show();
+  }
+}
+
+
+function showAlert(message, type, timeout, element) {
   const alertContainer = document.getElementsByClassName(element)[0];
 
   // Create the alert div
@@ -202,9 +219,7 @@ function showAlert(message, type, timeout,element) {
   }, timeout);
 }
 
-
 if (localStorage.getItem('reloadFlag')) {
   showAlert('Fees Paid Successfully', 'success', 4000, element='container-xl mt-4');
   localStorage.removeItem('reloadFlag'); // Clear the flag after showing the alert
 }
-
