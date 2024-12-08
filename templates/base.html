@@ -8,6 +8,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <title>{% block title %}Falak Public School{% endblock %}</title>
 
     <style>
@@ -88,23 +89,30 @@
     </div>
 
     <script>
-      function updatePage(endpoint, id,  payload) {
-        const url = endpoint;
+  async function updatePage(endpoint, id, payload) {
+    const url = endpoint;
 
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Insert the received HTML into the specified container
-            document.getElementById(id).innerHTML = data.html;
-        })
-        .catch(error => console.error('Error:', error));
+    try {
+      const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+      });
+
+        const data = await response.json();
+
+        document.getElementById(id).innerHTML = data.html;
+
+        // Return the data object to the caller
+        console.log(data.data)
+        return data.data;
+    } catch (error) {
+        console.error('Error:', error);
     }
+}
+
 
   </script>
 
