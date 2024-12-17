@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm.attributes import flag_modified
-
+from stdnum import verhoeff
 db = SQLAlchemy()
 
 class FeesDB(db.Model):
@@ -50,6 +50,7 @@ class StudentsDB(db.Model):
     FA2 = db.Column(db.JSON)
     SA2 = db.Column(db.JSON)
     Fees = db.Column(db.JSON)
+    Parents_Aadhar = db.Column(db.JSON)
 
     __table_args__ = (
         db.Index('idx_class_roll', 'CLASS', 'ROLL'),
@@ -131,3 +132,12 @@ def StudentData(*args, class_filter_json=None):
     results_json.sort(key=lambda row: (class_order_mapping.get(row['CLASS'], float('inf')), row['ROLL']))
 
     return results_json
+
+def updateParentsAdhar(id, data):
+    student = StudentsDB.query.filter_by(id=id).first()
+    if student:
+        student.Parents_Aadhar = data
+        
+        flag_modified(student, 'Parents_Aadhar')
+        db.session.commit()
+        return 'SUCCESS'
