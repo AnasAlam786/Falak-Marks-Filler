@@ -2,13 +2,20 @@
 {% set index = loop.index %}
 <!-- Header Section -->
 <div
-  class="d-flex align-items-center bg-secondary text-white px-3 py-1 w-auto mb-1"
+  class="d-flex align-items-center text-white px-3 py-1 w-auto mb-1"
   role="button"
-  style="border: 1px solid #888; border-radius: 5px;"
+  style="background: linear-gradient(135deg, #6a11cb, #2575fc); /* Soft purple to blue gradient */
+         border: 2px solid #4e00b5; /* Deep purple border */
+         border-radius: 5px; /* Slight rounding for smooth edges */
+         cursor: pointer;
+         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+         transition: transform 0.3s ease, box-shadow 0.3s ease;" 
   data-bs-toggle="collapse"
   data-bs-target="#contentSection{{ index }}"
   aria-expanded="false"
-  aria-controls="contentSection{{ index }}">
+  aria-controls="contentSection{{ index }}"
+  onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 6px 12px rgba(0, 0, 0, 0.15)';"
+  onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 10px rgba(0, 0, 0, 0.1)';">
   <div id="toggleTriangle{{ index }}"
     style="width: 0; height: 0; border-left: 8px solid transparent;
     border-right: 8px solid transparent;
@@ -17,6 +24,7 @@
   </div>
   <h5 class="m-0">&nbsp;{{ student["STUDENTS_NAME"] }} ({{ student["CLASS"] }} - {{ student["ROLL"] }}) ₹{{student["Fee"]}}</h5>
 </div>
+
 <!-- Content Section -->
 <div id="contentSection{{ index }}" class="collapse {{ 'show' if index == 1 }} mb-3 mt-3 mx-3">
   <div class="card shadow-xl border-1 rounded-3" style="background-color: #2c3034" ">
