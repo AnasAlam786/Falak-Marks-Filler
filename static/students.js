@@ -82,6 +82,7 @@
 
   let sharedData=null
   function viewStudentDetails(studentId) {
+    document.getElementById('modalBody').innerHTML = '';
     new bootstrap.Modal(document.getElementById('feesModal')).show()
     updatePage('/getfees', 'modalBody',   {studentId: studentId, task: 'get' }).then((data) => {
       sharedData=data
