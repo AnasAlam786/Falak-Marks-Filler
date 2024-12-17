@@ -85,6 +85,7 @@
     new bootstrap.Modal(document.getElementById('feesModal')).show()
     updatePage('/getfees', 'modalBody',   {studentId: studentId, task: 'get' }).then((data) => {
       sharedData=data
+      console.log(data)
     
       const grandTotal = document.getElementById('grandTotal');
       const contentSections = document.querySelectorAll('[id^="contentSection"]');
