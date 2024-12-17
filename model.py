@@ -1,6 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm.attributes import flag_modified
-from stdnum import verhoeff
 db = SQLAlchemy()
 
 class FeesDB(db.Model):
