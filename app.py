@@ -84,7 +84,6 @@ def getfees():
             html = render_template('feesModal.html',data=data,currentMonth=monthIndex)
             soup=BeautifulSoup(html,"lxml")
             content=soup.body.decode_contents()
-            prnt(content)
             
             return jsonify({"html":str(content),"data":data})
 
