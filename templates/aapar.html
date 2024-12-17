@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 {% block title %}Aapar{% endblock %}
 
@@ -83,7 +82,7 @@
         <td class="align-middle text-center">
           <div class="d-flex flex-column justify-content-center align-items-center w-100">
             <span class="fw-bold mb-1">{{ row.FATHERS_NAME }}</span>
-            <input type="number" inputmode="numeric"
+            <input type="text" inputmode="numeric" oninput="formatAadharNumber(this)" maxlength="14"
                    placeholder="Enter Father's Aadhar" value="{{ row.Parents_Aadhar['Father'] if row.Parents_Aadhar and 'Father' in row.Parents_Aadhar else '' }}"
                    class="form-control"
                    onfocus="this.select()" 
@@ -94,8 +93,8 @@
         <td class="align-middle text-center">
           <div class="d-flex flex-column justify-content-center align-items-center w-100">
             <span class="fw-bold mb-1">{{ row.MOTHERS_NAME }}</span>
-            <input type="number" inputmode="numeric" value="{{ row.Parents_Aadhar['Mother'] if row.Parents_Aadhar and 'Mother' in row.Parents_Aadhar else '' }}"
-                   placeholder="Enter Mother's Aadhar" 
+            <input type="text" inputmode="numeric" value="{{ row.Parents_Aadhar['Mother'] if row.Parents_Aadhar and 'Mother' in row.Parents_Aadhar else '' }}"
+                   placeholder="Enter Mother's Aadhar"  oninput="formatAadharNumber(this)" maxlength="14"
                    class="form-control"
                    onfocus="this.select()" 
                    id="MAadhar-{{ row.id }}">
@@ -179,5 +178,53 @@ document.addEventListener("keydown", (event) => {
     submit(input)
   }
 });
+
+function searchFunction() {
+    const input = document.getElementById('search-input');
+    const filter = input.value.toLowerCase();
+    const table = document.getElementById('dataTable');
+    const rows = table.getElementsByTagName('tr'); // Get all rows in the table
+
+    for (let i = 1; i < rows.length; i++) { // Start from 1 to skip header row
+        const row = rows[i];
+        const cells = row.getElementsByTagName('td'); // Get all cells in each row
+        let found = false;
+
+        // Loop through each cell in the row
+        for (let j = 0; j < cells.length; j++) {
+            const cell = cells[j];
+            if (cell) {
+                const text = cell.textContent || cell.innerText;
+                if (text.toLowerCase().indexOf(filter) > -1) {
+                    found = true; // If the text matches the filter, mark the row as found
+                    break;
+                }
+            }
+        }
+
+        // Show or hide the row based on the search result
+        if (found) {
+            row.style.display = ''; // Show the row
+        } else {
+            row.style.display = 'none'; // Hide the row
+        }
+    }
+}
+
+function formatAadharNumber(input) {
+    // Remove non-numeric characters
+    let value = input.value.replace(/\D/g, '');
+
+    // Format the value as Aadhar number (xxxx-xxxx-xxxx)
+    if (value.length <= 12) {
+        value = value.replace(/(\d{4})(\d{1,4})/, '$1-$2');
+        value = value.replace(/(\d{4})(\d{1,4})/, '$1-$2');
+        value = value.replace(/(\d{4})(\d{1,4})$/, '$1-$2');
+    }
+
+    // Set the value back to the input field
+    input.value = value;
+}
+
 </script>
 {% endblock %}
