@@ -41,7 +41,7 @@ class StudentsDB(db.Model):
     AADHAAR = db.Column(db.Text)
     FATHERS_NAME = db.Column(db.Text)
     MOTHERS_NAME = db.Column(db.Text)
-    Intialised_at_SDMS = db.Column(db.Text)
+    ADMISSION_SESSION = db.Column(db.Text)
     ADMISSION_NO = db.Column(db.Integer)
     ADMISSION_DATE = db.Column(db.Date)
     FA1 = db.Column(db.JSON)
@@ -50,6 +50,7 @@ class StudentsDB(db.Model):
     SA2 = db.Column(db.JSON)
     Fees = db.Column(db.JSON)
     Parents_Aadhar = db.Column(db.JSON)
+    Free_Scheme = db.Column(db.JSON)
 
     __table_args__ = (
         db.Index('idx_class_roll', 'CLASS', 'ROLL'),
