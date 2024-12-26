@@ -1,6 +1,9 @@
 <div class="modal-body">
   <div class="text-center mb-4">
-    <img src="{{ 'https://lh3.googleusercontent.com/d/' + student['IMAGE'] + '=s500' if student['IMAGE'] else 'https://cdn.pixabay.com/photo/2016/04/22/04/57/graduation-1345143_1280.png' }}" alt="Student Image" class="student-image">
+    <img src="{{ 'https://lh3.googleusercontent.com/d/' + student['IMAGE'] + '=s500' if student['IMAGE'] else 'https://cdn.pixabay.com/photo/2016/04/22/04/57/graduation-1345143_1280.png' }}" 
+     alt="Student Image" 
+     class="student-image" 
+     style="object-fit: cover; object-position: top;">
     <h3 class="mt-2">{{ student["STUDENTS_NAME"] }}</h3>
   </div>
   <div class="student-card-body">
