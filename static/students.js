@@ -84,9 +84,7 @@
     document.getElementById('modalBody').innerHTML = 'Loading...';
     
     const backdrop = document.querySelector('.modal-backdrop');
-    if (backdrop) {
-        backdrop.remove();
-    }
+    if (backdrop) {backdrop.remove()}
     var modal = new bootstrap.Modal(document.getElementById('studentDetailsModal'));    
     
     modal.show()
