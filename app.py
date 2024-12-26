@@ -58,6 +58,7 @@ def studentModal():
 
     data=StudentsDB.query.filter_by(PHONE=student.PHONE).all()
 
+    student.CLASS=student.CLASS.split("/")[0]
     
     if student.AADHAAR:
         student.AADHAAR = "-".join(student.AADHAAR[i:i+4] for i in range(0, 12, 4))
@@ -65,7 +66,7 @@ def studentModal():
         student.DOB = student.DOB.strftime('%a, %d %b %Y')
     if student.ADMISSION_DATE:
         student.ADMISSION_DATE = student.ADMISSION_DATE.strftime('%d %b %Y')  
-        
+
     student.Siblings=[]
     for record in data:
         if str(record.id) != id:
