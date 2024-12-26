@@ -49,9 +49,34 @@ def login():
     return render_template('login.html', error=error)
 
 
-@app.route('/studentModal', methods=["GET", "POST"])
+@app.route('/studentModal', methods=["POST"])
 def studentModal():
-    return render_template('studentModal.html')
+    data = request.json
+    
+    id = data.get('studentId')
+    student = StudentsDB.query.filter_by(id=id).first()
+
+    data=StudentsDB.query.filter_by(PHONE=student.PHONE).all()
+
+    student.Siblings=[]
+
+    student.AADHAAR = "-".join(student.AADHAAR[i:i+4] for i in range(0, 12, 4))
+
+    if student.DOB:
+        student.DOB = student.DOB.strftime('%a, %d %b %Y')
+    if student.ADMISSION_DATE:
+        student.ADMISSION_DATE = student.ADMISSION_DATE.strftime('%d %b %Y')   
+
+    for record in data:
+        if str(record.id) != id:
+            student.Siblings.append({"Name":record.STUDENTS_NAME, "Class": record.CLASS.split("/")[0], "Roll": record.ROLL, "id": record.id})
+
+
+    content = render_template('studentModal.html', student=student)
+
+
+    return jsonify({"html":str(content)})
+    
 
 
 @app.route('/getfees', methods=["GET", "POST"])
