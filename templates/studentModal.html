@@ -1,0 +1,68 @@
+<div class="modal-body">
+  <div class="text-center mb-4">
+    <img src="{{ 'https://lh3.googleusercontent.com/d/' + student['IMAGE'] + '=s500' if student['IMAGE'] else 'https://cdn.pixabay.com/photo/2016/04/22/04/57/graduation-1345143_1280.png' }}" alt="Student Image" class="student-image">
+    <h3 class="mt-3">{{ student["STUDENTS_NAME"] }}</h3>
+  </div>
+  <div class="student-card-body">
+    <table class="table table-hover align-middle">
+      <thead>
+      </thead>
+      <tbody>
+        <tr>
+          <th>Father's Name</th>
+          <td>{{ student["FATHERS_NAME"] }}</td>
+        </tr>
+        <tr>
+          <th>Mother's Name</th>
+          <td>{{ student["MOTHERS_NAME"] }}</td>
+        </tr>
+        <tr>
+          <th>Aadhaar</th>
+          <td>{{ student["AADHAAR"] }}</td>
+        </tr>
+        
+        <tr>
+          <th>Date of Birth</th>
+          <td>{{ student["DOB"] }}</td>
+        </tr>
+        <tr>
+          <th>SR Number</th>
+          <td>{{ student["SR"] }}</td>
+        </tr>  
+        <tr>
+          <th>Ad. No</th>
+          <td>{{ student["ADMISSION_NO"] }}</td>
+        </tr>
+        <tr>
+          <th>Ad. Date</th>
+          <td>{{ student["ADMISSION_DATE"] }}</td>
+        </tr>
+        <tr>
+          <th>PEN No.</th>
+          <td>{{ student["PEN"] }}</td>
+        </tr>
+        <tr>
+          <th>Phone</th>
+            <td><a href="tel:{{ student['PHONE'] }}" class="text-decoration-none">
+              <i class="fa fa-phone"></i> <strong>{{ student["PHONE"] }}</strong>
+            </a>
+        </td>
+        </tr>
+        {% if student["Siblings"] != [] %}
+        <tr>
+          <th>Siblings</th>
+          <td>
+            {% for sib in student["Siblings"] %}
+              <a class="link-style" onclick="viewStudentDetails('{{ sib["id"] }}')">{{ sib["Name"] }}</a>&nbsp;&nbsp;{{ sib["Class"] }}-{{ sib["Roll"] }}<br>
+            {% endfor %}
+          </td>
+        </tr>
+        {% endif %}
+        <tr>
+          <th>Address</th>
+          <td>{{ student["ADDRESS"] }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
