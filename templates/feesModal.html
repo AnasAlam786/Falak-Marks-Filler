@@ -1,75 +1,345 @@
-{% for student in data %}
-{% set index = loop.index %}
-<!-- Header Section -->
-<div
-  class="d-flex align-items-center text-white px-3 py-1 w-auto mb-1"
-  role="button"
-  style="background: linear-gradient(135deg, #6a11cb, #2575fc); /* Soft purple to blue gradient */
-         border: 2px solid #4e00b5; /* Deep purple border */
-         border-radius: 5px; /* Slight rounding for smooth edges */
-         cursor: pointer;
-         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-         transition: transform 0.3s ease, box-shadow 0.3s ease;" 
-  data-bs-toggle="collapse"
-  data-bs-target="#contentSection{{ index }}"
-  aria-expanded="false"
-  aria-controls="contentSection{{ index }}"
-  onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 6px 12px rgba(0, 0, 0, 0.15)';"
-  onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 10px rgba(0, 0, 0, 0.1)';">
-  <div id="toggleTriangle{{ index }}"
-    style="width: 0; height: 0; border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    {% if index == 1 %} border-bottom: 8px solid white;{% else %}
-    border-top: 8px solid white;{% endif %}">
-  </div>
-  <h5 class="m-0">&nbsp;{{ student["STUDENTS_NAME"] }} ({{ student["CLASS"] }} - {{ student["ROLL"] }}) ₹{{student["Fee"]}}</h5>
-</div>
+<div class="modal fade" id="feesModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
 
-<!-- Content Section -->
-<div id="contentSection{{ index }}" class="collapse {{ 'show' if index == 1 }} mb-3 mt-3 mx-3">
-  <div class="card shadow-xl border-1 rounded-3" style="background-color: #2c3034" ">
-    <div class="row g-2 p-2">
-      {% set fees_items = student["Fees"].items()|list %}
-      {% for month, date in fees_items[:12] %}
-      {% if date is not none %}
-      <div class="col">
-        <label class="btn btn-success w-100" style="background-color: green; color: white;">
-        {{ month }}
-        </label>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fs-4 d-flex align-items-center">
+          <i class="bi bi-credit-card me-2"></i> Pay Fees
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      {% elif date is none and loop.index < currentMonth %}
-      <div class="col">
-        <input type="checkbox" class="btn-check" id="{{ month }}{{ index }}" autocomplete="on" data-name="{{ month }}">
-        <label class="btn w-100 btn-outline-danger" for="{{ month }}{{ index }}">{{ month }}</label>
+      <div id="modalBody" class="modal-body p-0">
+      {% for student in data %}
+      {% set index = loop.index %}
+      <!-- Header Section -->
+      <div
+        class="d-flex align-items-center text-white px-3 py-1 w-auto mb-1"
+        role="button"
+        style="background: linear-gradient(135deg, #6a11cb, #2575fc); /* Soft purple to blue gradient */
+              border: 2px solid #4e00b5; /* Deep purple border */
+              border-radius: 5px; /* Slight rounding for smooth edges */
+              cursor: pointer;
+              box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+              transition: transform 0.3s ease, box-shadow 0.3s ease;" 
+        data-bs-toggle="collapse"
+        data-bs-target="#contentSection{{ index }}"
+        aria-expanded="false"
+        aria-controls="contentSection{{ index }}"
+        onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 6px 12px rgba(0, 0, 0, 0.15)';"
+        onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 10px rgba(0, 0, 0, 0.1)';">
+        <div id="toggleTriangle{{ index }}"
+          style="width: 0; height: 0; border-left: 8px solid transparent;
+          border-right: 8px solid transparent;
+          {% if index == 1 %} border-bottom: 8px solid white;{% else %}
+          border-top: 8px solid white;{% endif %}">
+        </div>
+        <h5 class="m-0">&nbsp;{{ student["STUDENTS_NAME"] }} ({{ student["CLASS"] }} - {{ student["ROLL"] }}) ₹{{student["Fee"]}}</h5>
       </div>
-      {% else %}
-      <div class="col">
-        <input type="checkbox" class="btn-check" id="{{ month }}{{ index }}" autocomplete="on" data-name="{{ month }}">
-        <label class="btn w-100 btn-outline-warning" for="{{ month }}{{ index }}">{{ month }}</label>
-      </div>
-      {% endif %}
-      {% endfor %}
-      <div class="text-center mt-1">
-        <h6 class="text-secondary font-weight-bold">
-          <span id="checkedMonths" class="text-primary">0</span> months are selected.
-        </h6>
-      </div>
-    </div>
-  </div>
-  <!-- Net Amount Section -->
-  <div class="container mt-2">
-    <div class="card shadow-lg border-1 rounded-3" style="background-color: #2c3034">
-      <div class="card-body p-3">
-        <div class="d-flex flex-column align-items-center">
-          <div class="input-group w-100">
-            <span class="input-group-text bg-primary text-white fs-4">₹</span>
-            <input id="netAmount" type="number" class="form-control form-control-lg border-primary"
-              placeholder="Amount" aria-label="Amount" onfocus="this.select();" min="0">
-            <span class="input-group-text bg-primary text-white fs-5">.00</span>
+
+      <!-- Content Section -->
+      <div id="contentSection{{ index }}" class="collapse {{ 'show' if index == 1 }} mb-3 mt-3 mx-3">
+        <div class="card shadow-xl border-1 rounded-3" style="background-color: #2c3034" ">
+          <div class="row g-2 p-2">
+            {% set fees_items = student["Fees"].items()|list %}
+            {% for month, date in fees_items[:12] %}
+            {% if date is not none %}
+            <div class="col">
+              <label class="btn btn-success w-100" style="background-color: green; color: white;">
+              {{ month }}
+              </label>
+            </div>
+            {% elif date is none and loop.index < currentMonth %}
+            <div class="col">
+              <input type="checkbox" class="btn-check" id="{{ month }}{{ index }}" autocomplete="on" data-name="{{ month }}">
+              <label class="btn w-100 btn-outline-danger" for="{{ month }}{{ index }}">{{ month }}</label>
+            </div>
+            {% else %}
+            <div class="col">
+              <input type="checkbox" class="btn-check" id="{{ month }}{{ index }}" autocomplete="on" data-name="{{ month }}">
+              <label class="btn w-100 btn-outline-warning" for="{{ month }}{{ index }}">{{ month }}</label>
+            </div>
+            {% endif %}
+            {% endfor %}
+            <div class="text-center mt-1">
+              <h6 class="text-secondary font-weight-bold">
+                <span id="checkedMonths" class="text-primary">0</span> months are selected.
+              </h6>
+            </div>
+          </div>
+        </div>
+        <!-- Net Amount Section -->
+        <div class="container mt-2">
+          <div class="card shadow-lg border-1 rounded-3" style="background-color: #2c3034">
+            <div class="card-body p-3">
+              <div class="d-flex flex-column align-items-center">
+                <div class="input-group w-100">
+                  <span class="input-group-text bg-primary text-white fs-4">₹</span>
+                  <input id="netAmount" type="number" class="form-control form-control-lg border-primary"
+                    placeholder="Amount" aria-label="Amount" onfocus="this.select();" min="0">
+                  <span class="input-group-text bg-primary text-white fs-5">.00</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+      {% endfor %}
+    </div>
+    <div class="modal-footer d-flex justify-content-between align-items-center">
+      <!-- Grand Total on the Left -->
+      <div class="card shadow-lg border-1 rounded-3 p-2">
+        <span class="me-auto fs-5 fw-bold">Total : <span id="grandTotal" class="fs-4 text-success">₹0</span></span>
+
+      </div>
+      
+      <!-- Buttons on the Right -->
+      <div class="d-flex">
+        <button type="button" class="btn btn-outline-secondary me-3" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success shadow-sm" onclick="verifyModal()">Pay Fees</button>
+      </div>
     </div>
   </div>
 </div>
-{% endfor %}
+</div>
+
+<!----------verify modal-------------->
+
+<div class="modal fade" id="verify" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Veriy The Payment</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <div class="modal-body 2">
+        <div class="form-check mb-2">
+          <input class="form-check-input" type="checkbox" value="" id="verifyCheckbox">
+          <label class="form-check-label" for="flexCheckDefault">
+            Please mark this checkbox once the payment has been received.
+          </label>
+        </div>
+      
+      <div class="modal-footer">
+        <a href="#" data-bs-target="#feesModal" data-bs-toggle="modal" class="btn btn-secondary">Back</a>
+        <a href="#" class="btn btn-success" id='finalPay' onclick="Pay()">Final Pay</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const grandTotal = document.getElementById('grandTotal');
+  const contentSections = document.querySelectorAll('[id^="contentSection"]');
+  const toggleTriangles = document.querySelectorAll('[id^="toggleTriangle"]');
+  const checkedMonths = document.querySelectorAll('[id^="checkedMonths"]');
+  const remains = document.querySelectorAll('[id^="remains"]');
+  const netAmounts = document.querySelectorAll('[id^="netAmount"]');
+  const fees = 250;
+
+  // Loop through each contentSection and toggleTriangle
+  contentSections.forEach((contentSection, index) => {
+    const toggleTriangle = toggleTriangles[index];
+
+    contentSection.addEventListener('show.bs.collapse', () => {
+      toggleTriangle.style.borderTop = 'none';
+      toggleTriangle.style.borderBottom = '8px solid white';
+
+      contentSections.forEach((section) => {
+        if (section !== contentSection) {
+          section.classList.remove('show');
+        }
+      });
+    });
+
+    contentSection.addEventListener('hide.bs.collapse', () => {
+      toggleTriangle.style.borderBottom = 'none';
+      toggleTriangle.style.borderTop = '8px solid white';
+    });
+  });
+
+  // Handle netAmount and checkbox interactions
+  netAmounts.forEach((netAmount, index) => {
+    let checkboxes = contentSections[index].querySelectorAll('.btn-check');
+
+    netAmount.addEventListener("input", function () {
+      console.log("Net Amount")
+      let months = parseInt(netAmount.value / fees);
+      checkedMonths[index].textContent = months;
+      remains[index].textContent = parseInt(netAmount.value) - fees * months;
+
+      checkboxes.forEach(checkbox => checkbox.checked = false);
+
+      for (let i = 0; i < months; i++) {
+        if (checkboxes[i]) {
+          checkboxes[i].checked = true;
+        }
+      }
+    });
+
+    checkboxes.forEach(checkbox => {
+      checkbox.addEventListener('click', function() {
+        let checkedMonth = checkedMonths[index];
+        
+        if (checkbox.checked) {
+          checkedMonth.textContent = parseInt(checkedMonth.textContent) + 1;
+        } else {
+          checkedMonth.textContent = parseInt(checkedMonth.textContent) - 1;
+        }
+
+        netAmount.value = (parseInt(checkedMonth.textContent) * fees) + parseInt(remains[index].textContent);
+      });
+    });
+  });
+
+
+
+
+
+
+
+  let sharedData=null
+  function viewStudentDetails(studentId) {
+    document.getElementById('modalBody').innerHTML = '';
+    new bootstrap.Modal(document.getElementById('feesModal')).show()
+    updatePage('/getfees', 'modalBody',   {studentId: studentId, task: 'get' }).then((data) => {
+      sharedData=data
+    
+      const grandTotal = document.getElementById('grandTotal');
+      const contentSections = document.querySelectorAll('[id^="contentSection"]');
+      const toggleTriangles = document.querySelectorAll('[id^="toggleTriangle"]');
+      const checkedMonths = document.querySelectorAll('[id^="checkedMonths"]');
+      const netAmounts = document.querySelectorAll('[id^="netAmount"]')
+
+      contentSections.forEach((contentSection, index) => {
+        months=0
+        const toggleTriangle = toggleTriangles[index];
+    
+        contentSection.addEventListener('show.bs.collapse', () => {
+          toggleTriangle.style.borderTop = 'none';
+          toggleTriangle.style.borderBottom = '8px solid white';
+    
+          contentSections.forEach((section) => {
+            if (section !== contentSection) {
+              section.classList.remove('show');
+            }
+          });
+        });
+    
+        contentSection.addEventListener('hide.bs.collapse', () => {
+          toggleTriangle.style.borderBottom = 'none';
+          toggleTriangle.style.borderTop = '8px solid white';
+        });
+      });
+
+      netAmounts.forEach((netAmount, index) => {
+        let checkboxes = contentSections[index].querySelectorAll('.btn-check');
+      
+        let fee = data[index]["Fee"]
+        
+        checkboxes.forEach(checkbox => {
+          checkbox.addEventListener('click', function() {
+            let checkedMonth = checkedMonths[index];
+            
+            if (checkbox.checked) {
+              checkedMonth.textContent = parseInt(checkedMonth.textContent) + 1;
+            } else {
+              checkedMonth.textContent = parseInt(checkedMonth.textContent) - 1;
+            }
+    
+            netAmount.value = parseInt(checkedMonth.textContent) * fee
+            
+            var sum=0
+            netAmounts.forEach(net => {
+              if (isNaN(parseInt(net.value))){return}
+              sum = sum + parseInt(net.value)})
+    
+            grandTotal.textContent='₹'+sum
+          });
+        });
+      });
+  })
+  
+}
+
+function Pay() {
+  const verifycheck = document.getElementById('verifyCheckbox');
+
+  if(!verifycheck.checked){
+    showAlert(message="First, check the checkbox to confirm payment, then proceed to pay the fees.", type='danger', timeout=4000, element='modal-body 2')
+    return}
+  
+
+  const contentSections = document.querySelectorAll('[id^="contentSection"]');
+  contentSections.forEach((contentSection, index) => {
+
+    var checked = contentSection.querySelectorAll('.btn-check:checked');
+    var checkedValues = Array.from(checked).map(function(checkbox) {
+        return checkbox.getAttribute("data-name");
+    });
+
+    fetch('/getfees', { // Replace with your server URL
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+          studentId: sharedData[index].id, // Replace with actual ID
+          months: checkedValues, // Replace with desired months
+          task: 'update'
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.STATUS === "SUCCESS") {
+        // If the status is SUCCESS, close the modal
+        localStorage.setItem('reloadFlag', 'true');
+        location.reload();
+        }
+      else {
+        // If the status is FAILED, you can show an error message or leave the modal open
+        showAlert(message="There is a problem, try again", type='danger', timeout=4000, element='modal-body')}
+    })
+
+  })
+}
+
+function verifyModal() {
+  if (grandTotal.textContent.trim() === '₹0'){
+    showAlert(message="You need to select a month in order to pay the fees.", type='danger', timeout=4000,element='modal-body'); return
+  } else {
+    // Hide Modal 1 and Show Modal 2
+    bootstrap.Modal.getInstance(document.getElementById('feesModal')).hide();
+    new bootstrap.Modal(document.getElementById('verify')).show();
+  }
+}
+
+
+function showAlert(message, type, timeout, element) {
+  const alertContainer = document.getElementsByClassName(element)[0];
+
+  // Create the alert div
+  const alertDiv = document.createElement('div');
+  alertDiv.className = `alert alert-${type} alert-dismissible fade show mb-1 mt-1`;
+  alertDiv.role = 'alert';
+  alertDiv.innerHTML = `
+    ${message}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  `;
+
+  // Append the alert to the container
+  alertContainer.prepend(alertDiv);
+
+  // Automatically remove the alert after the specified timeout
+  setTimeout(() => {
+    alertDiv.classList.remove('show'); // Start the fade-out effect
+    alertDiv.classList.add('hide');
+    setTimeout(() => alertDiv.remove(), 500); // Fully remove the element after fading out
+  }, timeout);
+}
+
+if (localStorage.getItem('reloadFlag')) {
+  showAlert('Fees Paid Successfully', 'success', 4000, element='container-xl mt-4');
+  localStorage.removeItem('reloadFlag'); // Clear the flag after showing the alert
+}
+
+</script>
