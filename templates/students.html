@@ -7,7 +7,7 @@
   .modal-header 
           { background: linear-gradient(90deg, #4e54c8, #8f94fb); }
   .student-card-body 
-          { background: #2a2a3d; border-radius: 15px; padding: 20px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); }
+          { background: #2a2a3d; border-radius: 15px; padding: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); }
   .student-image 
           { border: 3px solid #8f94fb; border-radius: 50%; object-fit: cover; width: 150px; height: 150px; }
   .table th, .table td 
@@ -95,15 +95,19 @@
 <div class="modal fade" id="studentDetailsModal" tabindex="-1" aria-labelledby="studentDetailsLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="studentDetailsLabel">Falak Public School</h5>
+      <div class="modal-header d-flex justify-content-center align-items-center w-100">
+        <div class="d-flex justify-content-center align-items-center w-100">
+          <h5 class="modal-title">
+            <i class="fas fa-school"></i>&nbsp;&nbsp;Falak Public School
+          </h5>
+        </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div id="modalBody" class="modal-body">
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="new bootstrap.Modal(document.getElementById('studentDetailsModal')).hide()">Close</button>
       </div>
     </div>
   </div>
