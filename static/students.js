@@ -80,10 +80,16 @@
   // Initial load
   filterStudents();
 
-function viewStudentDetails(studentId) {
-  var modal = new bootstrap.Modal(document.getElementById('studentDetailsModal'));
-  modal.hide()
-  document.getElementById('modalBody').innerHTML = '';
-  modal.show()
-  updatePage('/studentModal', 'modalBody',   {studentId: studentId})
-}
+  function viewStudentDetails(studentId) {
+    document.getElementById('modalBody').innerHTML = 'Loading...';
+    
+    const backdrop = document.querySelector('.modal-backdrop');
+    if (backdrop) {
+        backdrop.remove();
+    }
+    var modal = new bootstrap.Modal(document.getElementById('studentDetailsModal'));    
+    
+    modal.show()
+    updatePage('/studentModal', 'modalBody',   {studentId: studentId})
+  }
+  
