@@ -83,13 +83,13 @@
       </div>
     
 
-    <div class="container-xl mt-4">
+    <div class="container-fluid mt-4">
       {% block content %}
       {% endblock %}
     </div>
 
     <script>
-  async function updatePage(endpoint, id, payload) {
+  async function updatePage(endpoint, id, payload, append = null) {
     const url = endpoint;
 
     try {
@@ -101,13 +101,14 @@
           body: JSON.stringify(payload),
       });
 
-        const data = await response.json();
+      const data = await response.json();
+      element= document.getElementById(id) 
 
-        document.getElementById(id).innerHTML = data.html;
+      if (append){
+        element.insertAdjacentHTML(append, data.htm)}  //"beforebegin", "afterbegin", "beforeend", "afterend"
+      else{element.innerHTML = data.html}
 
-        // Return the data object to the caller
-        console.log(data.data)
-        return data.data;
+      return data.data;
     } catch (error) {
         console.error('Error:', error);
     }
@@ -115,6 +116,5 @@
 
 
   </script>
-
   </body>
 </html>
