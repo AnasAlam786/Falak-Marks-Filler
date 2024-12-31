@@ -1,0 +1,73 @@
+<div id="Question" class="d-flex flex-column align-items-end mb-4">
+    <div class="d-flex flex-column align-items-end mb-4" id="Question-{{ index }}">
+
+        <div class="question input-group mb-2">
+            <select  class="form-select fw-bold " rows="1" style="overflow: hidden; resize: none;" onchange="addQuestion(this)">
+              <option selected>Select Question Type</option>
+              <option value="mcq">MCQ's</option>
+              <option value="fillUp">Fill Ups</option>
+              <option value="T-F">True/False</option>
+              <option value="match">Matching</option>
+              <option value="QnA">Question & Answers</option>
+            </select>
+            
+            <button class="btn btn-success ms-1" onclick="addQuestion(this)" style="width: 35px; height: 40px;">+</button>
+            <button class="btn btn-danger ms-1" onclick="remove(this)" style="width: 35px; height: 40px;">-</button>
+        </div>
+
+    </div>
+</div>
+
+<div id="mcq" class="mcq input-group mb-4" style="width: 98%;"> 
+
+    <!-- Textarea and Buttons on the same line with spacing -->
+    <textarea class="form-control me-1 mb-2" placeholder="MCQ Question" rows="1" oninput="adjustHeight(this)"></textarea>
+    <button class="btn btn-outline-success ms-1" onclick="addQuestion(this)" style="width: 35px; height: 38px;">+</button>
+    <button class="btn btn-outline-danger ms-1" onclick="remove(this)" style="width: 35px; height: 38px;">-</button>
+
+    <!-- Option Inputs shifted to the right with margin -->
+    <div class="input-group mb-1 ms-auto" style="width: 98%;">
+        <input type="text" class="form-control" placeholder="Option 1">
+        <input type="text" class="form-control ms-2" placeholder="Option 2">
+    </div>
+    <div class="input-group ms-auto" style="width: 98%;">
+        <input type="text" class="form-control" placeholder="Option 3">
+        <input type="text" class="form-control ms-2" placeholder="Option 4">
+    </div>
+</div>
+
+
+
+
+<div id="fillUp" class="fillUp input-group mb-1" style="width: 98%;"> 
+
+    <textarea class="form-control mb-1" placeholder="Fill Up Question" rows="1" style="overflow: hidden; resize: none;" oninput="adjustHeight(this)"></textarea>
+    <button class="btn btn-outline-success ms-1" onclick="addQuestion(this)" style="width: 35px; height: 38px;">+</button>
+    <button class="btn btn-outline-danger ms-1" onclick="remove(this)" style="width: 35px; height: 38px;">-</button>
+</div>
+
+<div id="QnA" class="QnA input-group mb-1" style="width: 98%;"> 
+    <textarea class="form-control mb-1" placeholder="Question and Answers" rows="1" style="overflow: hidden; resize: none;" oninput="adjustHeight(this)"></textarea>
+    <button class="btn btn-outline-success ms-1" onclick="addQuestion(this)" style="width: 35px; height: 38px;">+</button>
+    <button class="btn btn-outline-danger ms-1" onclick="remove(this)" style="width: 35px; height: 38px;">-</button>
+</div>
+
+<div id="match" class="match input-group mb-1" style="width: 98%;">
+    <input type="text" class="form-control" placeholder="Match 1">
+    <input type="text" class="form-control" placeholder="Match 2">
+
+    <button class="btn btn-outline-success ms-1" onclick="addQuestion(this)" style="width: 35px; height: 38px;">+</button>
+    <button class="btn btn-outline-danger ms-1" onclick="remove(this)" style="width: 35px; height: 38px;">-</button>
+</div>
+
+<div id="T-F" class="T-F input-group mb-1" style="width: 98%;"> 
+    <textarea class="form-control mb-1" placeholder="True/False Question" rows="1" style="overflow: hidden; resize: none;" oninput="adjustHeight(this)"></textarea>
+    <button class="btn btn-outline-success ms-1" onclick="addQuestion(this)" style="width: 35px; height: 38px;">+</button>
+    <button class="btn btn-outline-danger ms-1" onclick="remove(this)" style="width: 35px; height: 38px;">-</button>
+</div>
+
+<div id="qPaper" class="qPaper input-group mb-1" style="width: 98%;"> 
+    <textarea class="form-control mb-1" placeholder="True/False Question" rows="1" style="overflow: hidden; resize: none;" oninput="adjustHeight(this)"></textarea>
+    <button class="btn btn-outline-success ms-1" onclick="addQuestion(this)" style="width: 35px; height: 38px;">+</button>
+    <button class="btn btn-outline-danger ms-1" onclick="remove(this)" style="width: 35px; height: 38px;">-</button>
+</div>
