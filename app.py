@@ -189,7 +189,7 @@ def paper():
             
             return jsonify({"html":str(content)})
             
-        return render_template('paper.html', index=1, CaAlphabet="A", SmAlphabet='a')
+        return render_template('paper.html', index=1)
 
     else:
         return redirect(url_for('login'))
@@ -415,67 +415,3 @@ def aapar():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-"""
-GOOGLE_SHEETS_URL = "https://sheets.googleapis.com/v4/spreadsheets/1yGyqIyDWtaVK1z2LbvvtEDl1YpeIgWMwuAyUcIdr3Cc/values/Sheet1?key=AIzaSyCunanUcxEoloBYJR1EqhkD16-uWAxlQzY"
-
-@app.route('/getData/<CLASS>/<SUBJECT>',methods=['GET','POST'])
-def getData(CLASS, SUBJECT):
-    response = requests.get(GOOGLE_SHEETS_URL)
-
-    if response.status_code == 200:
-        jdata = response.json().get('values')
-        df = pd.DataFrame(jdata[1:], columns=jdata[0])
-        exam=f"FA1_{SUBJECT}"
-
-        filtered_df = df[df['CLASS'] == CLASS]
-        data = filtered_df[['CLASS', 'ROLL', exam]].to_dict(orient='records')
-        return jsonify(data)
-    else:
-        return "Failed"
-    return f"Class is {CLASS}"
-
-
-
-function SelectFunc() {
-          const CLASS = document.getElementById("Class").value;
-          const SUBJECT = document.getElementById("Subject").value;
-
-          if (SUBJECT !== "Subject" && CLASS !== "Class") {
-
-            fetch(`/getData/${CLASS}/${SUBJECT}`,{method: 'GET',
-                 headers: {
-                     'Content-Type': 'application/json'}
-                 })
-            .then(response => response.json())
-            .then(data => {
-              creatingRows(data, SUBJECT)
-              onEnter()
-            })
-            console.log("Hii there")
-          }
-
-
-        }  
-
-
-
-
-function onEnter(rows) {
-        focusedInput = document.activeElement
-
-        if (focusedInput && focusedInput.tagName === 'INPUT') {
-
-        focusedInput.addEventListener("keydown", (event) => {
-
-            if (event.key === "Enter") {
-                event.preventDefault()
-                button=focusedInput.nextElementSibling
-                submit(button)
-
-
-            }
-        });
-    }
-}"""
