@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="icon" href="static/logo.svg" type="image/svg+xml">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    
+    
+    <style>
+    .a4-paper {
+        width: 210mm;
+        
+        font-size: small;
+        height: 297mm;
+        background-color: #fff;
+        padding: 3mm;
+        border: 1px solid #ddd;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+</style>
+<body>
+<div class="a4-paper">
+    <div class="text-center border-bottom">
+        <p class="h4 fw-bold mb-0">FALAK PUBLIC SCHOOL, MORADABAD</p>
+        <p class="h5 fw-bold mb-0">SUMMATIVE ASSESSMENT - 1 (2024-25)</p>
+        <p class="h6 fw-bold mb-0">Subject - English</p>
+        <div class="d-flex justify-content-between">
+            <p class="fw-bold mb-0">Time: 3 Hrs</p>
+            <p class="h6 fw-bold">Class - 1st</p>
+            <p class="fw-bold mb-0">M.M: 80</p>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+    {% if questions%}
+    
+    {% for question in questions %}
+    
+        {% if question.type in ["QnA", "fillUp", "T-F"] %}
+        <p class="mb-0" ><strong>Q{{ loop.index }}: Answer.</strong></p>
+        <div style="padding-left: 15px">
+
+            {% for subQuestion in question.subQuestion %}
+            <p class="mb-0">{{ loop.index }}. {{ subQuestion }}</p>
+            {% endfor %}
+
+        </div>
+        {% endif %}
+
+
+        {% if question.type=="match" %}
+        <p class="mb-0"><strong>Q{{ loop.index }}: Match the following.</strong></p>
+        <div class="row mb-0">
+            <div class="col-md-3">
+                <ul>
+                    {% for subQuestion in question.subQuestion %}
+                    <li class="list-group-item border-0 py-0">{{ loop.index }}. {{ subQuestion }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <ul>
+                    {% for option in question.options %}
+                    <li class="list-group-item border-0 py-0">{{ option }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if question.type=="mcq" %}
+        <p class="mb-0"><strong>Q{{ loop.index }}: Mark the correct options.</strong></p>
+        <div style="padding-left: 15px;" class="row">
+
+            {% set num = 0 %}
+            {% for subQuestion in question.subQuestion %}
+            {% set num = num + 1 %}
+              
+            <p class="mb-0">{{ num }}: {{ subQuestion.text }}</p>
+            <div style="padding-left: 30px;"class="col-md-10">
+                <div class="row">
+                    {% for option in subQuestion.options[:2] %}
+                    <div class="col-5">
+                        <p class="mb-0">{{ loop.index }}. {{ option }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="row">
+                    {% for option in subQuestion.options[2:] %}
+                    <div class="col-5">
+                        <p class="mb-0">{{ loop.index + 2 }}. {{ option }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+        {% endif %}
+
+    {% endfor %}
+    {% endif %}
+
+</body>
+</html>
