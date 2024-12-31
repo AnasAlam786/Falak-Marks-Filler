@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}Create Paper{% endblock %}
+{% block content %}
+
+<div class="d-flex flex-column justify-content-center align-items-center mb-3">
+  <h1 class="fw-bold text-center mb-2">Falak Public School</h1>
+  <input type="text" class="form-control text-center fw-bold mb-2 w-75" placeholder="Event">
+  <input type="text" class="form-control text-center fw-bold mb-2 w-50" placeholder="Subject">
+  <input type="text" class=" form-control text-center fw-bold" style="width: 25%;" placeholder="Class">
+</div>
+
+<div id="content" style="width: 100%;">
+  <div  class="d-flex flex-column align-items-end mb-4" id="Question-{{ index }}">
+
+    <div class="question input-group mb-1">
+        <select  class="form-select fw-bold " rows="1" style="overflow: hidden; resize: none;" onchange="addQuestion(this)">
+          <option selected>Select Question Type</option>
+          <option value="mcq">MCQ's</option>
+          <option value="fillUp">Fill Ups</option>
+          <option value="T-F">True/False</option>
+          <option value="match">Matching</option>
+          <option value="QnA">Question & Answers</option>
+        </select>
+        
+        <button class="btn btn-success ms-1" onclick="addQuestion(this)" style="width: 35px; height: 40px;">+</button>
+        <button class="btn btn-danger ms-1" onclick="remove(this)" style="width: 35px; height: 40px;">-</button>
+    </div>
+
+  </div>
+
+
+</div>
+
+<div class="container text-center mt-3">
+    <button class="btn btn-primary w-75" onclick="convert()">Convert</button>
+</div>
+
+<script>
+    var questionCount=1
+
+    function addQuestion(element) {
+      const parent = element.parentElement;
+      const grandparent = parent.parentElement
+
+      if (element.tagName.toLowerCase() === 'select') {
+        const siblings = Array.from(grandparent.children).filter(child => child !== parent);
+        siblings.forEach(sibling => sibling.remove());
+        updatePage('/paper', grandparent.id , { value : element.value }, append="beforeend");
+      }
+      
+      else if (parent.classList.contains('question')){
+        questionCount++;
+        updatePage('/paper', element.parentElement.parentElement.id , { value : questionCount }, append="afterend");
+      }
+      else{
+        updatePage('/paper', grandparent.id , { value : parent.id }, append="beforeend");
+      }
+      
+    }
+    function remove(element) {
+      const parent = element.parentElement;
+      if (parent.classList.contains('question')){
+        parent.parentElement.remove()
+      }
+      else{parent.remove()}
+    }
+
+    function convert() {
+      alert("Question Paper Will Be Created Soon....")
+      let questions = [];
+      const elements = document.querySelectorAll('[class*="mcq"], [class*="match"], [class*="fillUp"], [class*="Qna"], [class*="T-F"]');
+
+    elements.forEach(element => {
+        console.log(element.id);  // Logs the class name of each matched element
+    });
+      questions.push({
+        "type": "",
+        "subQuestion": [],
+        "options": [],
+    });
+
+
+    }
+
+    function adjustHeight(element) {
+      element.style.height = "auto"; // Reset the height
+      element.style.height = (element.scrollHeight) + "px"; // Set to scroll height
+    }
+  </script>
+
+{% endblock %}
+
+
+    <!-- 
+    <div id="subQst-Choice" class="d-flex flex-column align-items-end" style="width: 100%;"> 
+      <div id="sub-question" class="input-group mb-1" style="width: 98%;"> 
+          <textarea class="form-control fw-bold mb-1"  rows="1" style="overflow: hidden; resize: none;" oninput="adjustHeight(this)">{{ CaAlphabet }}. </textarea>
+          <button class="btn btn-outline-success ms-1" onclick="addSubQuestion(this)" style="width: 35px; height: 40px;">+</button>
+          <button class="btn btn-outline-danger ms-1" onclick="remove(this)" style="width: 35px; height: 40px;">-</button>
+      </div>
+
+      <div id="choice" class="input-group mb-1" style="width: 96%;"> 
+          <textarea class="form-control fw-bold mb-1"  rows="1" style="overflow: hidden; resize: none;" oninput="adjustHeight(this)">{{ SmAlphabet }}. </textarea>
+          <button class="btn btn-outline-success ms-1" onclick="addChoice(this)" style="width: 35px; height: 40px;">+</button>
+          <button class="btn btn-outline-danger ms-1" onclick="remove(this)" style="width: 35px; height: 40px;">-</button>
+      </div>
+  </div>-->
