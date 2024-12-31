@@ -5,6 +5,7 @@ from werkzeug.security import check_password_hash
 from model import db, TeachersLogin, StudentData, updateScore, updateFees, StudentsDB, FeesDB ,updateParentsAdhar
 from bs4 import BeautifulSoup
 import datetime
+import re
 
 load_dotenv()
 
@@ -19,6 +20,60 @@ db.init_app(app)
 @app.route('/')
 def home():
     return render_template('home.html')
+
+@app.route('/test', methods=["GET"])
+def test():
+    questions = [
+        {
+            "type": "QnA",
+            "subQuestion": [
+                "What is your name?",
+                "Where do you live?"
+            ]
+        },
+        {
+            "type": "fillUp",
+            "subQuestion": [
+                "The cat is ___.",
+                "I ___ to school."
+            ]
+        },
+        {
+            "type": "T-F",
+            "subQuestion": [
+                "The sun rises in the east. (True/False)",
+                "Fish can fly. (True/False)"
+            ]
+        },
+        {
+            "type": "match",
+            "subQuestion": [
+                "Lion",
+                "Elephant",
+                "Tiger"
+            ],
+            "options": [
+                "King of the Jungle",
+                "Large Mammal",
+                "Ferocious Animal"
+            ]
+        },
+        {
+            "type": "mcq",
+            "subQuestion": [
+                {
+                    "text": "What is 2 + 2?",
+                    "options": ["3", "4", "5", "6"]
+                },
+                {
+                    "text": "Which is the largest continent?",
+                    "options": ["Asia", "Africa", "Europe", "Antarctica"]
+                }
+            ]
+        }
+    ]
+
+    return render_template('test.html',questions=questions)
 
 
 @app.route('/login', methods=["GET", "POST"])
@@ -77,8 +132,6 @@ def studentModal():
 
 
     return jsonify({"html":str(content)})
-    
-
 
 @app.route('/getfees', methods=["GET", "POST"])
 def getfees():
@@ -111,7 +164,36 @@ def getfees():
             soup=BeautifulSoup(html,"lxml")
             content=soup.body.decode_contents()
             
+            
             return jsonify({"html":str(content),"data":data})
+
+
+@app.route('/paper', methods=["GET", "POST"])
+def paper():
+    if "email" in session:
+
+        if request.method == "POST":
+            payload = request.json
+            value =  payload.get('value')
+
+            if isinstance(value, int):
+                html = render_template('paper_elements.html',index=value)
+                soup=BeautifulSoup(html,"lxml")
+                content = soup.find('div', id="Question").decode_contents()
+                
+                return jsonify({"html":str(content)})
+
+            html = render_template('paper_elements.html')
+            soup=BeautifulSoup(html,"lxml")
+            content = soup.find('div', id=value)
+            
+            return jsonify({"html":str(content)})
+            
+        return render_template('paper.html', index=1, CaAlphabet="A", SmAlphabet='a')
+
+    else:
+        return redirect(url_for('login'))
+        
 
 @app.route('/updatemarks', methods=["GET", "POST"])
 def updatemarks():
@@ -154,7 +236,6 @@ def update():
     resp = updateScore(id, exam, subject, score)
 
     return jsonify({"STATUS": resp})
-
 
 @app.route('/students', methods=['GET', 'POST'])
 def studentsData():
