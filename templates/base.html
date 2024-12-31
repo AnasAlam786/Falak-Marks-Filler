@@ -102,10 +102,10 @@
       });
 
       const data = await response.json();
-      element= document.getElementById(id) 
+      element= document.getElementById(id)
 
       if (append){
-        element.insertAdjacentHTML(append, data.htm)}  //"beforebegin", "afterbegin", "beforeend", "afterend"
+        element.insertAdjacentHTML(append, data.html)}  //"beforebegin", "afterbegin", "beforeend", "afterend"
       else{element.innerHTML = data.html}
 
       return data.data;
