@@ -27,14 +27,28 @@
     </div>
 
   </div>
-
-
 </div>
+
+
 
 <div class="container text-center mt-3">
     <button class="btn btn-primary w-75" onclick="convert()">Convert</button>
 </div>
 
+<style>
+  .a4-paper {
+      width: 210mm;
+      font-size:75%;
+      height: 297mm;
+      
+      padding: 3mm;
+      border: 1px solid #ddd;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+</style>
+<div id="a4PDF" class="a4-paper mt-6">
+
+</div>
 <script>
     var questionCount=1
 
@@ -66,18 +80,54 @@
     }
 
     function convert() {
-      alert("Question Paper Will Be Created Soon....")
-      let questions = [];
-      const elements = document.querySelectorAll('[class*="mcq"], [class*="match"], [class*="fillUp"], [class*="QnA"], [class*="T-F"]');
 
-    elements.forEach(element => {
-        console.log(element.id);  // Logs the class name of each matched element
-    });
-      questions.push({
-        "type": "",
-        "subQuestion": [],
-        "options": [],
-    });
+      let questions = [];
+
+      const ele = document.querySelectorAll('.mcq, .fillUp, .match, .QnA, .T-F');
+      let elements = document.querySelectorAll('[id^="Question-"]');
+      qText={"fillUp":"Fill Ups",
+          "T-F":"True or False",
+          "QnA":"Question and Answer"}
+
+      elements.forEach(el => {
+        let q=el.querySelectorAll('.mcq, .fillUp, .match, .QnA, .T-F');
+        if (q.length === 0) {alert("Please select all the select ."); return 0};
+
+        if (q[0].id==="fillUp" || q[0].id==="T-F" || q[0].id==="QnA"){
+          questions.push({
+            "marks": "",
+            "qText": qText[q[0].id],
+            "type": q[0].id,
+            "subQuestion": [...el.querySelectorAll('.sub-question')].map(q => q.value), })
+        }
+
+        if (q[0].id==="match"){
+          questions.push({
+            "marks": "",
+            "qText": "Match The Following",
+            "type": "match",
+            "subQuestion": [...el.querySelectorAll('.sub-question')].map(q => q.value),
+            "options": [...el.querySelectorAll('.option')].map(q => q.value)})
+        }
+
+        if (q[0].id==="mcq"){
+          var mcqs=el.querySelectorAll('.mcq')
+
+          questions.push({
+            "marks": "",
+            "qText": "Mark The Correct Option",
+            "type": "mcq",
+            "subQuestion": [...mcqs].map(mcq => ({
+                  "text": mcq.querySelector('.sub-question').value,
+                  "options": [...mcq.querySelectorAll('.option')].map(opt => opt.value)
+              }))
+            })
+        };
+        
+      })
+
+
+      updatePage('/paper', "a4PDF" , { questions : questions, value : "a4PDF"});
 
 
     }
