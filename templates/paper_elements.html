@@ -1,6 +1,5 @@
 <div id="Question" class="d-flex flex-column align-items-end mb-4">
     <div class="d-flex flex-column align-items-end mb-4" id="Question-{{ index }}">
-
         <div class="question input-group mb-2">
             <select  class="form-select fw-bold " rows="1" style="overflow: hidden; resize: none;" onchange="addQuestion(this)">
               <option selected>Select Question Type</option>
@@ -14,60 +13,134 @@
             <button class="btn btn-success ms-1" onclick="addQuestion(this)" style="width: 35px; height: 40px;">+</button>
             <button class="btn btn-danger ms-1" onclick="remove(this)" style="width: 35px; height: 40px;">-</button>
         </div>
-
     </div>
 </div>
 
 <div id="mcq" class="mcq input-group mb-4" style="width: 98%;"> 
 
     <!-- Textarea and Buttons on the same line with spacing -->
-    <textarea class="form-control me-1 mb-2" placeholder="MCQ Question" rows="1" oninput="adjustHeight(this)"></textarea>
+    <textarea class="sub-question rounded-pill form-control me-1 mb-2" placeholder="MCQ Question" rows="1" oninput="adjustHeight(this)" required></textarea>
     <button class="btn btn-outline-success ms-1" onclick="addQuestion(this)" style="width: 35px; height: 38px;">+</button>
     <button class="btn btn-outline-danger ms-1" onclick="remove(this)" style="width: 35px; height: 38px;">-</button>
 
     <!-- Option Inputs shifted to the right with margin -->
     <div class="input-group mb-1 ms-auto" style="width: 98%;">
-        <input type="text" class="form-control" placeholder="Option 1">
-        <input type="text" class="form-control ms-2" placeholder="Option 2">
+        <input type="text" class="option rounded-pill form-control" placeholder="Option 1" required>
+        <input type="text" class="option rounded-pill form-control ms-2" placeholder="Option 2" required>
     </div>
     <div class="input-group ms-auto" style="width: 98%;">
-        <input type="text" class="form-control" placeholder="Option 3">
-        <input type="text" class="form-control ms-2" placeholder="Option 4">
+        <input type="text" class="option rounded-pill form-control" placeholder="Option 3" required>
+        <input type="text" class="option rounded-pill form-control ms-2" placeholder="Option 4" required>
     </div>
 </div>
 
-
-
+<div id="match" class="match input-group mb-1" style="width: 98%;">
+    <input type="text" class="sub-question rounded-pill form-control" placeholder="Match 1" required>
+    <input type="text" class="option rounded-pill form-control" placeholder="Match 2" required>
+    
+    <button class="btn btn-outline-success ms-1" onclick="addQuestion(this)" style="width: 35px; height: 38px;">+</button>
+    <button class="btn btn-outline-danger ms-1" onclick="remove(this)" style="width: 35px; height: 38px;">-</button>
+</div>
 
 <div id="fillUp" class="fillUp input-group mb-1" style="width: 98%;"> 
 
-    <textarea class="form-control mb-1" placeholder="Fill Up Question" rows="1" style="overflow: hidden; resize: none;" oninput="adjustHeight(this)"></textarea>
+    <textarea class="sub-question form-control mb-1" placeholder="Fill Up Question" rows="1" style="overflow: hidden; resize: none;" oninput="adjustHeight(this)" required></textarea>
     <button class="btn btn-outline-success ms-1" onclick="addQuestion(this)" style="width: 35px; height: 38px;">+</button>
     <button class="btn btn-outline-danger ms-1" onclick="remove(this)" style="width: 35px; height: 38px;">-</button>
 </div>
 
 <div id="QnA" class="QnA input-group mb-1" style="width: 98%;"> 
-    <textarea class="form-control mb-1" placeholder="Question and Answers" rows="1" style="overflow: hidden; resize: none;" oninput="adjustHeight(this)"></textarea>
-    <button class="btn btn-outline-success ms-1" onclick="addQuestion(this)" style="width: 35px; height: 38px;">+</button>
-    <button class="btn btn-outline-danger ms-1" onclick="remove(this)" style="width: 35px; height: 38px;">-</button>
-</div>
-
-<div id="match" class="match input-group mb-1" style="width: 98%;">
-    <input type="text" class="form-control" placeholder="Match 1">
-    <input type="text" class="form-control" placeholder="Match 2">
-
+    <textarea class="sub-question form-control mb-1" placeholder="Question and Answers" rows="1" style="overflow: hidden; resize: none;" oninput="adjustHeight(this)" required></textarea>
     <button class="btn btn-outline-success ms-1" onclick="addQuestion(this)" style="width: 35px; height: 38px;">+</button>
     <button class="btn btn-outline-danger ms-1" onclick="remove(this)" style="width: 35px; height: 38px;">-</button>
 </div>
 
 <div id="T-F" class="T-F input-group mb-1" style="width: 98%;"> 
-    <textarea class="form-control mb-1" placeholder="True/False Question" rows="1" style="overflow: hidden; resize: none;" oninput="adjustHeight(this)"></textarea>
+    <textarea class="sub-question form-control mb-1" placeholder="True/False Question" rows="1" style="overflow: hidden; resize: none;" oninput="adjustHeight(this)" required></textarea>
     <button class="btn btn-outline-success ms-1" onclick="addQuestion(this)" style="width: 35px; height: 38px;">+</button>
     <button class="btn btn-outline-danger ms-1" onclick="remove(this)" style="width: 35px; height: 38px;">-</button>
 </div>
 
-<div id="qPaper" class="qPaper input-group mb-1" style="width: 98%;"> 
-    <textarea class="form-control mb-1" placeholder="True/False Question" rows="1" style="overflow: hidden; resize: none;" oninput="adjustHeight(this)"></textarea>
-    <button class="btn btn-outline-success ms-1" onclick="addQuestion(this)" style="width: 35px; height: 38px;">+</button>
-    <button class="btn btn-outline-danger ms-1" onclick="remove(this)" style="width: 35px; height: 38px;">-</button>
+<div id="a4PDF">
+    <div class="text-center border-bottom">
+        <p class="h4 fw-bold mb-0">FALAK PUBLIC SCHOOL, MORADABAD</p>
+        <p class="h5 fw-bold mb-0">SUMMATIVE ASSESSMENT - 1 (2024-25)</p>
+        <p class="h6 fw-bold mb-0">Subject - English</p>
+        <div class="d-flex justify-content-between">
+            <p class="fw-bold mb-0">Time: 3 Hrs</p>
+            <p class="h6 fw-bold">Class - 1st</p>
+            <p class="fw-bold mb-0">M.M: 80</p>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+    {% if questions%}
+    
+    {% for question in questions %}
+
+        {% if question.type == "match" and question.subQuestion|default([])|length != 0 %}
+        <p class="mb-0"><strong>Q{{ loop.index }}. {{ question.qText }}</strong></p>
+        <div style="padding-left: 43px;" class="row mb-2">
+            <div class="col-md-3 p-0">
+                <ul class="list-group p-0">
+                    {% for subQuestion in question.subQuestion %}
+                    <li class="list-group-item bg-transparent border-0 p-0 mb-0">{{ "abcdefghijklmnopqrstuvwxyz"[loop.index-1] }}.) {{ subQuestion }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col-md-4 p-0">
+                <ul class="list-group p-0">
+                    {% for option in question.options %}
+                    <li class="list-group-item bg-transparent border-0 p-0 mb-0">{{ option }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+    
+    
+        {% if question.type in ["QnA", "fillUp", "T-F"] and question.subQuestion|length != 0 %}
+        <p class="mb-0" ><strong>Q{{ loop.index }}: {{ question.qText }}</strong></p>
+        <div class="mb-2" style="padding-left: 15px">
+
+            {% for subQuestion in question.subQuestion %}
+            <p class="mb-0">{{ "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[loop.index-1] }}. {{ subQuestion }}</p>
+            {% endfor %}
+
+        </div>
+        {% endif %}
+
+
+        {% if question.type == "mcq" and question.subQuestion|length != 0 %}
+        <p class="mb-0"><strong>Q{{ loop.index }}: {{ question.qText }}</strong></p>
+        <div style="padding-left: 15px;" class="row mb-2">
+
+            {% for subQuestion in question.subQuestion %}
+              
+            <p class="mb-0">{{ "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[loop.index-1] }}: {{ subQuestion.text }}</p>
+            <div style="padding-left: 30px;"class="col-md-10">
+                <div class="row">
+                    {% for option in subQuestion.options[:2] %}
+                    <div class="col-5">
+                        <p class="mb-0">{{ "abcdefghijklmnopqrstuvwxyz"[loop.index-1] }}. {{ option }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="row">
+                    {% for option in subQuestion.options[2:] %}
+                    <div class="col-5">
+                        <p class="mb-0">{{ "abcdefghijklmnopqrstuvwxyz"[loop.index+1] }}. {{ option }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+        {% endif %}
+
+    {% endfor %}
+    {% endif %}
+    </div>
 </div>
