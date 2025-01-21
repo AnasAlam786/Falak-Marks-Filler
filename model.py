@@ -2,13 +2,29 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm.attributes import flag_modified
 db = SQLAlchemy()
 
+class Schools(db.Model):
+    __tablename__ = 'Schools'
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.Date, nullable=False)
+    School_Name = db.Column(db.Text, nullable=False)
+    User = db.Column(db.Text, unique=True, nullable=False)
+    Address = db.Column(db.Text, nullable=False)
+    UDISE = db.Column(db.Text, unique=True, nullable=False)
+    Phone = db.Column(db.Text, nullable=False)
+    WhatsApp = db.Column(db.Text, nullable=False)
+    Email = db.Column(db.Text, unique=True, nullable=False)
+    Password = db.Column(db.Text, nullable=False)
+    Classes = db.Column(db.JSON)
+    IP = db.Column(db.JSON)
+    Logo = db.Column(db.Text)
+    Principal = db.Column(db.Text, nullable=False)
+    
 class FeesDB(db.Model):
     __tablename__ = 'FeesDB'
     id = db.Column(db.Integer, primary_key=True)
     CLASS = db.Column(db.Text, nullable=False)
     Fee = db.Column(db.Integer, nullable=False)
-
-    
+    school_id = db.Column(db.Text, nullable=False)
 
 class TeachersLogin(db.Model):
     __tablename__ = 'TeachersLogin'
@@ -16,9 +32,10 @@ class TeachersLogin(db.Model):
     name = db.Column(db.Text, nullable=False)
     email = db.Column(db.Text, unique=True, nullable=False)
     password = db.Column(db.Text, nullable=False)
-    classes = db.Column(db.JSON, nullable=False)
+    Classes = db.Column(db.JSON, nullable=False)
     ip = db.Column(db.JSON)
     role = db.Column(db.Text, nullable=False)
+    school_id = db.Column(db.Text, nullable=False)
 
 class StudentsDB(db.Model):
     __tablename__ = 'StudentsDB'
@@ -51,6 +68,7 @@ class StudentsDB(db.Model):
     Fees = db.Column(db.JSON)
     Parents_Aadhar = db.Column(db.JSON)
     Free_Scheme = db.Column(db.JSON)
+    school_id = db.Column(db.Text, nullable=False)
 
     __table_args__ = (
         db.Index('idx_class_roll', 'CLASS', 'ROLL'),
@@ -130,6 +148,9 @@ def StudentData(*args, class_filter_json=None):
 
     # Sort by class order mapping
     results_json.sort(key=lambda row: (class_order_mapping.get(row['CLASS'], float('inf')), row['ROLL']))
+
+    for student in results_json:
+        student["CLASS"]=student["CLASS"].split("/")[0]
 
     return results_json
 
