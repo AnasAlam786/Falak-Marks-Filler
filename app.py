@@ -1,11 +1,11 @@
-from flask import Flask, render_template, jsonify, request, session, url_for, redirect
+from flask import Flask, render_template, jsonify, request, session, url_for, redirect, make_response
 import os
 from dotenv import load_dotenv
 from werkzeug.security import check_password_hash
-from model import db, TeachersLogin, StudentData, updateScore, updateFees, StudentsDB, FeesDB ,updateParentsAdhar
+from model import db, TeachersLogin, StudentData, updateScore, updateFees, StudentsDB, FeesDB ,updateParentsAdhar, Schools
 from bs4 import BeautifulSoup
 import datetime
-import re
+
 
 load_dotenv()
 
@@ -16,13 +16,15 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
-
 @app.route('/')
 def home():
+    session.clear()
     return render_template('home.html')
+
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
+    session.clear()
     error=None
     
     if "email" in session:
@@ -31,20 +33,44 @@ def login():
     if request.method == "POST":
         email = request.form.get('email')
         password = request.form.get('password')
+        login_as = "admin"
 
-        dbTeacher = TeachersLogin.query.filter_by(email=email).first()
+        session.permanent = True
+        session["role"] = login_as
 
-        if dbTeacher and check_password_hash(dbTeacher.password, password):
+        if login_as=="admin":
+            school = Schools.query.filter_by(Email=email).first()
 
-            session['email'] = dbTeacher.email
-            session['name'] = dbTeacher.name
-            session['classes'] = dbTeacher.classes
-            session['ip'] = dbTeacher.ip
-            session['role'] = dbTeacher.role
-            session.permanent = True
-            return redirect(url_for('studentsData'))
-        else:
-            error="Wrong email or password"
+            if school and check_password_hash(school.Password, password):
+                print(school.School_Name)
+
+                session["school_name"] = school.School_Name
+                session["classes"] = school.Classes
+                session["logo"] = school.Logo
+                session["email"] = school.Email
+                session["school_id"] = school.User
+
+                return redirect(url_for('studentsData'))
+            
+            else: error="Wrong email or password"
+                
+        elif login_as=="teacher":
+            dbTeacher = TeachersLogin.query.filter_by(email=email).first()
+
+            if dbTeacher and check_password_hash(dbTeacher.password, password):
+
+                school = Schools.query.filter_by(User=dbTeacher.school_id).first()
+                
+                session["school_name"] = school.School_Name
+                session["classes"] = dbTeacher.Classes
+                session["Name"] = dbTeacher.name
+                session["logo"] = school.Logo
+                session["email"] = dbTeacher.email
+                session["school_id"] = school.User
+                session["id"] = dbTeacher.id
+
+                return redirect(url_for('studentsData'))
+            else: error="Wrong email or password"
 
     return render_template('login.html', error=error)
 
@@ -57,7 +83,6 @@ def studentModal():
     student = StudentsDB.query.filter_by(id=id).first()
 
     data=StudentsDB.query.filter_by(PHONE=student.PHONE).all()
-
     student.CLASS=student.CLASS.split("/")[0]
     
     if student.AADHAAR:
@@ -87,6 +112,7 @@ def getfees():
         id = req.get('studentId')
 
         if req.get('task') =='update':
+            
             months = req.get('months')
             current_date = datetime.datetime.now().strftime("%d-%m-%Y")
 
@@ -95,12 +121,15 @@ def getfees():
         
         elif req.get('task') =='get':
             student = StudentsDB.query.filter_by(id=id).first()
+            
             data=StudentsDB.query.filter_by(PHONE=student.PHONE).all()
             data=[record.to_dict() for record in data]
 
             for sibling in data:
+                
                 Fee=FeesDB.query.filter_by(CLASS=sibling["CLASS"]).first().Fee
                 sibling["Fee"]=Fee
+                sibling["CLASS"] = sibling["CLASS"].split("/")[0]
                             
             monthName =  datetime.datetime.now().strftime("%B")
             monthIndex=list(data[0]["Fees"].keys()).index(monthName)+1
@@ -123,14 +152,18 @@ def paper():
 
             if value=="a4PDF":
                 questions =  payload.get('questions')
-                #questions = [{"type": "match", "qText": "Match the following countries with their capitals:", "subQuestion": ["India", "France", "Japan", "Germany", "Brazil", "Canada"], "options": ["New Delhi", "Paris", "Tokyo", "Berlin", "Brasília", "Ottawa"]}, {"type": "QnA", "qText": "Answer the following general knowledge questions:", "subQuestion": ["Who is known as the Father of the Nation in India?", "What is the chemical symbol for water?", "Who wrote 'Pride and Prejudice'?", "What is the highest mountain in the world?", "Which planet is known as the Red Planet?"]}, {"type": "fillUp", "qText": "Fill in the blanks:", "subQuestion": ["The Great Wall of _____ is visible from space.", "The boiling point of water is _____ degrees Celsius.", "Albert Einstein developed the theory of _____", "The largest desert in the world is the _____ Desert.", "Light travels at approximately _____ km/s."]}, {"type": "T-F", "qText": "State whether the following statements are True or False:", "subQuestion": ["The Great Pyramid of Giza is one of the Seven Wonders of the Ancient World.", "The Pacific Ocean is the smallest ocean in the world.", "Mount Everest is in the Himalayas.", "Venus is the hottest planet in the solar system.", "The human body has 206 bones."]}, {"type": "mcq", "qText": "Choose the correct options:", "subQuestion": [{"text": "Which is the largest mammal on Earth?", "options": ["Elephant", "Blue Whale", "Giraffe", "Hippopotamus"]}, {"text": "Which is the closest star to Earth?", "options": ["Proxima Centauri", "Sirius", "Betelgeuse", "Alpha Centauri"]}, {"text": "Which is the longest river in the world?", "options": ["Amazon", "Nile", "Yangtze", "Mississippi"]}, {"text": "Which of the following is a primary color?", "options": ["Red", "Green", "Blue", "Yellow"]}]}, {"type": "mcq", "qText": "Science and Technology Questions:", "subQuestion": [{"text": "Who invented the light bulb?", "options": ["Thomas Edison", "Nikola Tesla", "Alexander Graham Bell", "Isaac Newton"]}, {"text": "Which planet has the most moons?", "options": ["Jupiter", "Saturn", "Mars", "Uranus"]}, {"text": "What does CPU stand for?", "options": ["Central Processing Unit", "Computer Power Unit", "Control Panel Unit", "Central Program Unit"]}, {"text": "What is the chemical formula for carbon dioxide?", "options": ["CO2", "H2O", "O2", "C2O"]}]}]
-                
+                event =  payload.get('event')
+                subject =  payload.get('subject')
+                std =  payload.get('std')
+                MM =  payload.get('MM')
+                hrs =  payload.get('hrs')
 
-                html = render_template('paper_elements.html',questions=questions)
+                #questions = [{"marks": "10", "type": "singleWord", "qText": "Define the following:", "subQuestion": ["India", "France", "Japan", "Germany", "Brazil", "Canada"]},{"marks": "10", "type": "match", "qText": "Match the following countries with their capitals:", "subQuestion": ["India", "France", "Japan", "Germany", "Brazil", "Canada"], "options": ["New Delhi", "Paris", "Tokyo", "Berlin", "Brasília", "Ottawa"]}, {"type": "QnA","marks": "10",  "qText": "Answer the following general knowledge questions:", "subQuestion": ["Who is known as the Father of the Nation in India?", "What is the chemical symbol for water?", "Who wrote 'Pride and Prejudice'?", "What is the highest mountain in the world?", "Which planet is known as the Red Planet?"]}, {"type": "fillUp", "qText": "Fill in the blanks:", "marks": "10", "subQuestion": ["The Great Wall of _____ is visible from space.", "The boiling point of water is _____ degrees Celsius.", "Albert Einstein developed the theory of _____", "The largest desert in the world is the _____ Desert.", "Light travels at approximately _____ km/s."]}, {"type": "T-F", "marks": "10", "qText": "State whether the following statements are True or False:", "subQuestion": ["The Great Pyramid of Giza is one of the Seven Wonders of the Ancient World.", "The Pacific Ocean is the smallest ocean in the world.", "Mount Everest is in the Himalayas.", "Venus is the hottest planet in the solar system.", "The human body has 206 bones."]}, {"type": "mcq", "qText": "Choose the correct options:", "marks": "10", "subQuestion": [{"text": "Which is the largest mammal on Earth?", "options": ["Elephant", "Blue Whale", "Giraffe", "Hippopotamus"]}, {"marks": "10", "text": "Which is the closest star to Earth?", "options": ["Proxima Centauri", "Sirius", "Betelgeuse", "Alpha Centauri"]}, {"text": "Which is the longest river in the world?", "options": ["Amazon", "Nile", "Yangtze", "Mississippi"]}, {"text": "Which of the following is a primary color?", "options": ["Red", "Green", "Blue", "Yellow"]}]}, {"type": "mcq", "qText": "Science and Technology Questions:", "subQuestion": [{"text": "Who invented the light bulb?", "options": ["Thomas Edison", "Nikola Tesla", "Alexander Graham Bell", "Isaac Newton"]}, {"text": "Which planet has the most moons?", "options": ["Jupiter", "Saturn", "Mars", "Uranus"]}, {"text": "What does CPU stand for?", "options": ["Central Processing Unit", "Computer Power Unit", "Control Panel Unit", "Central Program Unit"]}, {"text": "What is the chemical formula for carbon dioxide?", "options": ["CO2", "H2O", "O2", "C2O"]}]}]
+
+                html = render_template('paper_elements.html',questions=questions, event=event, subject=subject, std=std,MM=MM, hrs=hrs)
                 soup=BeautifulSoup(html,"lxml")
                 content = soup.find('div', id=value).decode_contents()
-                bootstrap_css_url = "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
-                
+
                 return jsonify({"html":str(content)})
 
 
@@ -372,4 +405,4 @@ def aapar():
         return redirect(url_for('login'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(port=5000, debug=True)
