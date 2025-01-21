@@ -4,12 +4,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <link rel="icon" href="static/logo.svg" type="image/svg+xml">
+    <link rel="icon" href= "{{ session['logo'] }}">
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <title>{% block title %}Falak Public School{% endblock %}</title>
+    <title>{% block title %}{{ session['school_name'] }}{% endblock %}</title>
 
     <style>
       body {
@@ -58,8 +58,9 @@
           </button>
           <!-- Logo and Brand -->
           <a class="navbar-brand fw-bold fs-4 text-white d-flex align-items-center" href="/">
-            <img src="{{ url_for('static', filename='logo.svg') }}" alt="Logo" width="40" height="35" class="me-2" />
-            Falak Public School
+            <img src="{{ session['logo'] }}" alt="Logo" width="40" height="35" class="me-2"/>
+
+            {{ session['school_name'] }}
           </a>
         </div>
       </div>
@@ -77,6 +78,7 @@
           <a href="/students"><i class="fas fa-user-graduate"></i> Students Data</a>
           <a href="/updatemarks"><i class="fas fa-pencil-alt"></i> Update Marks</a>
           <a href="/marks"><i class="fas fa-book-open"></i> Show Marks</a>
+          <a href="/paper"><i class="fas fa-pencil-alt"></i> Create Paper</a>
           <a href="/entrycard"><i class="fas fa-id-card"></i> Entry Card</a>
           <a href="/seatChits"><i class="fas fa-chalkboard-teacher"></i> Seat Chits</a>
         </div>        
