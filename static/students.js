@@ -226,6 +226,6 @@ function openFeesModal(){
   }
 
   if (localStorage.getItem('reloadFlag')) {
-    showAlert('Fees Paid Successfully', 'success', 4000, element='container-xl mt-4');
+    showAlert('Fees Paid Successfully', 'success', 4000, element='container-fluid mt-');
     localStorage.removeItem('reloadFlag'); // Clear the flag after showing the alert
   }
