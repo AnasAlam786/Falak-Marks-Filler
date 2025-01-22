@@ -44,10 +44,15 @@ document.addEventListener("DOMContentLoaded", function () {
 function submit(input) {
 
     const exam = input.getAttribute("exam");
-
+    const subject = input.getAttribute("subject");
+    const id = input.getAttribute("student_id");
+    
     if (
         ((exam === "FA1" || exam === "FA2") && input.value >= 0 && input.value <= 20) ||
-        ((exam === "SA1" || exam === "SA2") && input.value >= 0 && input.value <= 80)
+        ((exam === "SA1" || exam === "SA2") && input.value >= 0 && input.value <= 80) || 
+        (subject==="Drawing" && ["A", "B", "C","D","E"].includes(input.value)) ||
+        (exam==="Attendance" && input.value >= 0 && input.value <= 250)
+        
       ) {
         submitBTN = input.nextElementSibling
         submitBTN.disabled = true
@@ -59,8 +64,7 @@ function submit(input) {
         submitBTN.appendChild(spinner);
 
 
-        const id = input.getAttribute("student_id");
-        const subject = input.getAttribute("subject");
+        
 
         fetch("/update", {
             method: "POST",
