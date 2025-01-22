@@ -104,7 +104,7 @@
           <div class="input-group">
             <input type="{{ 'text' if SUBJECT == 'Drawing' else 'number' }}" 
                 inputmode="{{ 'text' if SUBJECT == 'Drawing' else 'numeric' }}" 
-                placeholder="{{ SUBJECT }} {{ EXAM }} Marks" 
+                placeholder = "{{ 'Attendance' if EXAM == 'Attendance' else SUBJECT + ' ' + EXAM + ' Marks' }}" 
                 class="form-control" 
                 oninput="{{ 'this.value = this.value.toUpperCase();' if SUBJECT == 'Drawing' else '' }}"
                 onfocus="this.select()" 
@@ -130,11 +130,11 @@
     const selectedSubject = document.getElementById("Subject").value;
     const selectedExam = document.getElementById("Exam").value;
 
-    // Check if any select box is not selected
-    if (selectedClass === "" || selectedSubject === "" || selectedExam === "") {
+    if ((selectedClass === "" || selectedSubject === "" || selectedExam === "") && (selectedExam != "Attendance" || selectedClass === "")) {
       alert("Please select all options before submitting.");
       return;
     }
+
 
     // Call the updateMarks function with the selected values
     updatePage('/updatemarks', 'marksTable', { subject: selectedSubject, class: selectedClass, exam: selectedExam });
