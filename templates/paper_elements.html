@@ -77,18 +77,19 @@
 
 
 <div id="a4PDF">
-    <div style="text-align: center; border-bottom: 1px solid #000; margin-bottom: 10px; padding-bottom: 10px;">
-        <p style="font-size: 1.5em; font-weight: bold; margin-bottom: 0.1px;">FALAK PUBLIC SCHOOL, MORADABAD</p>
-        <p style="font-size: 1.25em; font-weight: bold; margin: 0;">{{ event }}</p>
-        <p style="font-size: 1em; font-weight: bold; margin: 0;">Subject - {{ subject }}</p>
-        <div style="display: flex; justify-content: space-between;">
-            <p style="font-weight: bold; margin: 0;">Time: {{ hrs }} Hrs</p>
-            <p style="font-size: 1em; font-weight: bold;">Class - {{ std }}</p>
-            <p style="font-weight: bold; margin: 0;">M.M: {{ MM }}</p>
+    <div style="text-align: center; border-bottom: 1px solid #464646;">
+        <p style="font-size: 1.5em; font-weight: bold; margin: 0;">FALAK PUBLIC SCHOOL, MORADABAD</p>
+        <p style="font-size: 1.25em; font-weight: bold; margin: 0;">Summative Assessment - I</p>
+        <p style="font-size: 1em; font-weight: bold; margin: 0;">Subject - English</p>
+        <div style="display: flex; justify-content: space-between; margin: 0;">
+            <p style="font-weight: bold; margin: 0;">Time: 45 Hrs</p>
+            <p style="font-size: 1em; font-weight: bold; margin: 0;">Class - I</p>
+            <p style="font-weight: bold; margin: 0;">M.M: 20</p>
         </div>
     </div>
+    
 
-    <div style="width: 100%; padding: 15px;">
+    <div style="width: 100%; padding: 5px;">
         {% if questions %}
         {% for question in questions %}
         {% if question.type == "match" and question.subQuestion|default([])|length != 0 %}
@@ -97,7 +98,7 @@
             <span style="font-weight: bold;">{{ question.marks }}</span>
         </div>
 
-        <div style="display: flex; justify-content: flex-start; padding-left: 20px; margin-bottom: 10;">
+        <div style="display: flex; justify-content: flex-start; padding-left: 20px; margin-bottom: 5;">
             <ul style="list-style-type: none; padding-right: 100px; margin: 0;">
                 {% for subQuestion in question.subQuestion %}
                 <li>
@@ -121,7 +122,7 @@
             <span style="font-weight: bold;">{{ question.marks }}</span>
         </div>
 
-        <div style="margin-bottom: 10px; padding-left: 15px;">
+        <div style="margin-bottom: 5px; padding-left: 15px;">
             {% for subQuestion in question.subQuestion %}
             <p style="margin: 0;">{{ "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[loop.index-1] }}: {{ subQuestion }}</p>
             {% endfor %}
@@ -147,7 +148,7 @@
             <span style="font-weight: bold;">{{ question.marks }}</span>
         </div>
 
-        <div style="padding-left: 15px; margin-bottom: 10px;">
+        <div style="padding-left: 15px; margin-bottom: 5px;">
             {% for subQuestion in question.subQuestion %}
             <p style="margin: 0;">{{ "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[loop.index-1] }}: {{ subQuestion.text }}</p>
             
@@ -164,7 +165,7 @@
         {% endfor %}
         {% endif %}
     </div>
-</div>
+
 
     <style>
     .a4-paper {
