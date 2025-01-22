@@ -1,6 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
     const classDropdown = document.getElementById("Class");
     const subjectDropdown = document.getElementById("Subject");
+    const ExamDropdown = document.getElementById("Exam");
+
+    
 
     // Define mappings for mutual exclusions
     const restrictedClasses = ["Nursery/KG/PP3", "LKG/KG1/PP2", "UKG/KG2/PP1"];
