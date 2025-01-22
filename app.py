@@ -347,6 +347,15 @@ def marks():
                 grand_total['Total'] = sum(int(value) for value in grand_total.values() if value.isdigit())
                 student['Grand_Total'] = grand_total
 
+            if CLASS in ["2nd","3rd","4th","5th","6th","7th","8th"]:
+                for data in Data:
+                    for exam_key in ['FA1', 'FA2', 'SA1', 'SA2', 'FA1_SA1', 'FA2_SA2', 'Grand_Total']:
+                        if exam_key in data:
+                            exam = data[exam_key]
+                            exam['Drawing'] = exam.pop('Drawing', '')  # Move 'Drawing' to the end
+                            total = exam.pop('Total', '')  # Remove 'Total'
+                            exam['Total'] = total 
+
             html = render_template('showMarks.html', Data=Data)
             soup=BeautifulSoup(html,"lxml")
             content=soup.body.find('div',{'id':'results'}).decode_contents()
