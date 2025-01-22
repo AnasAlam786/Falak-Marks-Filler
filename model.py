@@ -69,6 +69,7 @@ class StudentsDB(db.Model):
     Parents_Aadhar = db.Column(db.JSON)
     Free_Scheme = db.Column(db.JSON)
     school_id = db.Column(db.Text, nullable=False)
+    Attendance = db.Column(db.Text)
 
     __table_args__ = (
         db.Index('idx_class_roll', 'CLASS', 'ROLL'),
@@ -101,15 +102,22 @@ def updateFees(id, months=None, date=None, extra=None):
 
 def updateScore(id, exam, subject, score):
     student = StudentsDB.query.filter_by(id=id).first()
+    
 
-    if student:
-        student_data = getattr(student, exam)  # Retrieve the JSON object
-        student_data[subject] = score  # Modify the JSON object with the new score
-        setattr(student, exam, student_data)  # Reassign the modified JSON back to the column
-        flag_modified(student, exam)  # Flag the JSON column as modified
+    try:
+        if exam=="Attendance":
+            
+            student.Attendance = score
+
+        else:
+            student_data = getattr(student, exam)  # Retrieve the JSON object
+            student_data[subject] = score  # Modify the JSON object with the new score
+            setattr(student, exam, student_data)  # Reassign the modified JSON back to the column
+            flag_modified(student, exam)  # Flag the JSON column as modified
+
         db.session.commit()
         return "SUCCESS"
-    else:
+    except:
         return "FAILED"
 
 def StudentData(*args, class_filter_json=None):
