@@ -2,24 +2,70 @@
 {% block title %}Create Paper{% endblock %}
 {% block content %}
 
+
 <div class="d-flex flex-column justify-content-center align-items-center mb-3">
-  <h1 class="fw-bold text-center mb-2">Falak Public School</h1>
-  <input type="text" class="form-control text-center fw-bold mb-2 w-75" placeholder="Event">
-  <input type="text" class="form-control text-center fw-bold mb-2 w-50" placeholder="Subject">
-  <input type="text" class=" form-control text-center fw-bold" style="width: 25%;" placeholder="Class">
+  <h1 class="fw-bold text-center mb-2">{{ session['school_name'] }}</h1>
+
+  <input type="text" class="event form-control text-center fw-bold mb-2 w-75" list="EventList" placeholder="Event">
+  <datalist id="EventList">
+    <option value="Formative Assessment - I">
+    <option value="Summative Assessment - I">
+    <option value="Formative Assessment - II">
+    <option value="Summative Assessment - II">
+  </datalist>
+
+  <input type="text" class="subject form-control text-center fw-bold mb-2 w-50" list="SubjectList" placeholder="Subject">
+  <datalist id="SubjectList">
+    <option value="English">
+    <option value="Hindi">
+    <option value="Math">
+    <option value="Science">
+    <option value="Computer">
+    <option value="S.S.T">
+    <option value="Urdu">
+    <option value="G.K">
+  </datalist>
+
+  <div class="d-flex justify-content-between">
+    <input type="text" class="hrs form-control text-center fw-bold" style="width: 60px;" placeholder="hrs">
+
+    <input type="text" class="class form-control text-center fw-bold" style="width: 25%;" list="ClassList" placeholder="Class">
+    <datalist id="ClassList">
+      <option value="Nursery">
+      <option value="LKG">
+      <option value="UKG">
+      <option value="I">
+      <option value="II">
+      <option value="III">
+      <option value="IV">
+      <option value="V">
+      <option value="VI">
+      <option value="VII">
+      <option value="VIII">
+    </datalist>
+
+    <input type="text" class="M-M form-control text-center fw-bold" style="width: 60px;" list="mList" placeholder="M.M">
+    <datalist id="mList">
+      <option value="20">
+      <option value="80">
+    </datalist>
+
+  </div>
 </div>
+
 
 <div id="content" style="width: 100%;">
   <div  class="d-flex flex-column align-items-end mb-4" id="Question-{{ index }}">
 
     <div class="question input-group mb-1">
-        <select  class="form-select fw-bold " rows="1" style="overflow: hidden; resize: none;" onchange="addQuestion(this)">
+        <select  class="form-select fw-bold" rows="1" style="overflow: hidden; resize: none;" onchange="addQuestion(this)">
           <option selected>Select Question Type</option>
-          <option value="mcq">MCQ's</option>
-          <option value="fillUp">Fill Ups</option>
-          <option value="T-F">True/False</option>
+          <option value="mcq">Multiple Choice Questions</option>
+          <option value="fillUp">Fill In The Blanks</option>
+          <option value="T-F">True or False</option>
           <option value="match">Matching</option>
           <option value="QnA">Question & Answers</option>
+          <option value="singleWord">Single Word Questions</option>
         </select>
         
         <button class="btn btn-success ms-1" onclick="addQuestion(this)" style="width: 35px; height: 40px;">+</button>
@@ -35,31 +81,50 @@
     <button class="btn btn-primary w-75" onclick="convert()">Convert</button>
 </div>
 
-<style>
-  .a4-paper {
-      width: 210mm;
-      font-size:75%;
-      height: 297mm;
-      
-      padding: 3mm;
-      border: 1px solid #ddd;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-</style>
+
+
 <div id="a4PDF" class="a4-paper mt-6">
 
 </div>
+
+
 <script>
     var questionCount=1
 
     function addQuestion(element) {
       const parent = element.parentElement;
       const grandparent = parent.parentElement
+      
 
       if (element.tagName.toLowerCase() === 'select') {
+        const qtext = element.options[element.selectedIndex].innerText;
         const siblings = Array.from(grandparent.children).filter(child => child !== parent);
+        
         siblings.forEach(sibling => sibling.remove());
+
+        const div = document.createElement('div')
+        div.className = "d-flex w-100"
+
+        const qinput = document.createElement('input');
+        qinput.type = 'text';
+        qinput.value = qtext
+        qinput.className = 'form-control mb-2 me-1 q-text'
+        qinput.onclick = function() { this.select(); };
+        qinput.placeholder = 'Enter Question Text';
+
+        const mInput = document.createElement('input');
+        mInput.type = 'number';
+        mInput.className = 'form-control mb-2 m-text';
+        mInput.onclick = function() { this.select(); };
+        mInput.placeholder = 'Marks';
+        mInput.style="width: 75px;"
+
+        div.appendChild(qinput)
+        div.appendChild(mInput)
+        
+        parent.insertAdjacentElement('afterend', div);
         updatePage('/paper', grandparent.id , { value : element.value }, append="beforeend");
+        
       }
       
       else if (parent.classList.contains('question')){
@@ -90,32 +155,40 @@
           "QnA":"Question and Answer"}
 
       elements.forEach(el => {
-        let q=el.querySelectorAll('.mcq, .fillUp, .match, .QnA, .T-F');
+        let q=el.querySelectorAll('.mcq, .fillUp, .match, .QnA, .T-F, .singleWord');
         if (q.length === 0) {alert("Please select all the select ."); return 0};
 
         if (q[0].id==="fillUp" || q[0].id==="T-F" || q[0].id==="QnA"){
           questions.push({
-            "marks": "",
-            "qText": qText[q[0].id],
+            "marks": el.querySelectorAll('[class*="m-text"]')[0].value,
+            "qText": el.querySelectorAll('[class*="q-text"]')[0].value,
             "type": q[0].id,
             "subQuestion": [...el.querySelectorAll('.sub-question')].map(q => q.value), })
         }
 
         if (q[0].id==="match"){
           questions.push({
-            "marks": "",
-            "qText": "Match The Following",
+            "marks": el.querySelectorAll('[class*="m-text"]')[0].value,
+            "qText": el.querySelectorAll('[class*="q-text"]')[0].value,
             "type": "match",
             "subQuestion": [...el.querySelectorAll('.sub-question')].map(q => q.value),
             "options": [...el.querySelectorAll('.option')].map(q => q.value)})
+        }
+
+        if (q[0].id==="singleWord"){
+          questions.push({
+            "marks": el.querySelectorAll('[class*="m-text"]')[0].value,
+            "qText": el.querySelectorAll('[class*="q-text"]')[0].value,
+            "type": "singleWord",
+            "subQuestion": [...el.querySelectorAll('.sub-question')].map(q => q.value),})
         }
 
         if (q[0].id==="mcq"){
           var mcqs=el.querySelectorAll('.mcq')
 
           questions.push({
-            "marks": "",
-            "qText": "Mark The Correct Option",
+            "marks": el.querySelectorAll('[class*="m-text"]')[0].value,
+            "qText": el.querySelectorAll('[class*="q-text"]')[0].value,
             "type": "mcq",
             "subQuestion": [...mcqs].map(mcq => ({
                   "text": mcq.querySelector('.sub-question').value,
@@ -125,9 +198,34 @@
         };
         
       })
+      event=document.getElementsByClassName("event")[0].value
+      subject=document.getElementsByClassName("subject")[0].value
+      std=document.getElementsByClassName("class")[0].value
+      hrs=document.getElementsByClassName("hrs")[0].value
+      MM=document.getElementsByClassName("M-M")[0].value
+      /*
+      
+
+      fetch('/paper', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ questions:questions, event:event, subject:subject, std:std, value:"a4PDF" })  // Send the HTML content as JSON
+          })
+          .then(response => response.json())
+          .then(data => {
+              const pdfBase64 = data.pdf_base64;
+              
+              const iframe = document.getElementById("pdf-viewer");
+              iframe.style.display = 'block';
+              iframe.src = 'data:application/pdf;base64,' + pdfBase64;
+          })
+          .catch(error => {
+              console.error('Error fetching the PDF:', error);
+          });*/
 
 
-      updatePage('/paper', "a4PDF" , { questions : questions, value : "a4PDF"});
+      updatePage('/paper', "a4PDF" , { questions:questions, event:event, subject:subject, std:std, hrs:hrs, MM:MM, value:"a4PDF" });
+      //new bootstrap.Modal(document.getElementById('paperModal')).show(); 
 
 
     }
