@@ -17,7 +17,7 @@ class Schools(db.Model):
     Classes = db.Column(db.JSON)
     IP = db.Column(db.JSON)
     Logo = db.Column(db.Text)
-    Principal = db.Column(db.Text, nullable=False)
+    Manager = db.Column(db.Text, nullable=False)
     
 class FeesDB(db.Model):
     __tablename__ = 'FeesDB'
