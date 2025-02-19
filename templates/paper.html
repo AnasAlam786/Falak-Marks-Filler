@@ -83,39 +83,15 @@
     <button class="btn btn-primary w-75" onclick="convert()">Convert</button>
 </div>
 
-<button onclick="downloadPDF()">Download PDF</button>
+<button onclick="download()">Download PDF</button>
 
 
-<div id="a4PDF" class="a4-paper">
+<div id="a4PDF" style="display: none;" class="a4-paper">
 
 </div>
 
 
 <script>
-
-function downloadPDF() {
-    const element = document.getElementById("a4PDF");
-
-    const { jsPDF } = window.jspdf;
-
-    // Assuming you have included jsPDF and html2canvas via CDN or import statements
-    const pdf = new jsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
-
-    html2canvas(document.getElementById("a4PDF"), { scale: 5 }).then(canvas => {
-    const imgData = canvas.toDataURL("image/jpeg", 1.0);
-    const pdfWidth = 210; // Fixed width for A4
-    const ratio = canvas.height / canvas.width;
-    const imgHeight = pdfWidth * ratio;
-    
-    pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, imgHeight);
-    pdf.save("output.pdf");
-    });
-
-
-
-}
-
-
 
     var questionCount=1
 
@@ -172,7 +148,7 @@ function downloadPDF() {
       else{parent.remove()}
     }
 
-    function convert() {
+    async function convert() {
 
       let questions = [];
 
@@ -232,16 +208,57 @@ function downloadPDF() {
       hrs=document.getElementsByClassName("hrs")[0].value
       MM=document.getElementsByClassName("M-M")[0].value
 
+      const html = await updatePage('/paper', null, { questions:questions, event:event, subject:subject, std:std, hrs:hrs, MM:MM, value:"a4PDF" })
 
-      updatePage('/paper', "a4PDF" , { questions:questions, event:event, subject:subject, std:std, hrs:hrs, MM:MM, value:"a4PDF" });
+      const newWindow = window.open("", "_blank");
+        
+      newWindow.document.write(`
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <style>
+                @page {
+                    margin: 0;
+                    size: A4;
+                }
+                html, body {
+                    margin: 0;
+                    padding: 5px;
+                    width: 210mm;
+                    height: 297mm;
+                }
 
+                @media print {
+                    body {
+                        width: 210mm;
+                        height: 297mm;
+                        color: black;
+                        overflow: hidden;
+                        background: rgb(255, 555, 255);
+                        line-height: 1.2;
+                        page-break-after: always;
+                        font-size: 20px;   
+                    }
+                }
+                </style>
+            </head>
+            <body>
+                ${html}
+                <script>
+                // When the new window loads, trigger the print dialog
+                window.onload = function() {
+                    window.print();
+                };
+                <\/script>
+            </body>
+            </html>
+        `);
+        newWindow.document.close();
 
     }
 
-    function adjustHeight(element) {
-      element.style.height = "auto"; // Reset the height
-      element.style.height = (element.scrollHeight) + "px"; // Set to scroll height
-    }
+
   </script>
 
 {% endblock %}
