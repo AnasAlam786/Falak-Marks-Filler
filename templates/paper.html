@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Create Paper{% endblock %}
 {% block content %}
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <div class="d-flex flex-column justify-content-center align-items-center mb-3">
   <h1 class="fw-bold text-center mb-2">{{ session['school_name'] }}</h1>
@@ -81,14 +81,41 @@
     <button class="btn btn-primary w-75" onclick="convert()">Convert</button>
 </div>
 
+<button onclick="downloadPDF()">Download PDF</button>
 
 
-<div id="a4PDF" class="a4-paper mt-6">
+<div id="a4PDF" class="a4-paper">
 
 </div>
 
 
 <script>
+
+        function downloadPDF() {
+            const element = document.getElementById("a4PDF");
+
+            const { jsPDF } = window.jspdf;
+
+            const pdf = new jsPDF({
+                unit: "mm",
+                format: [210, 297],  // Exact A4 size
+                orientation: "portrait"
+            });
+
+            // Get element as canvas
+            html2canvas(element, { scale: 3 }).then((canvas) => {
+                const imgData = canvas.toDataURL("image/jpeg", 1.0);
+
+                // Add image to PDF without margins
+                pdf.addImage(imgData, "JPEG", 0, 0, 210, 297);
+                pdf.save("output.pdf");
+            });
+
+
+        }
+
+
+
     var questionCount=1
 
     function addQuestion(element) {
@@ -203,29 +230,9 @@
       std=document.getElementsByClassName("class")[0].value
       hrs=document.getElementsByClassName("hrs")[0].value
       MM=document.getElementsByClassName("M-M")[0].value
-      /*
-      
-
-      fetch('/paper', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ questions:questions, event:event, subject:subject, std:std, value:"a4PDF" })  // Send the HTML content as JSON
-          })
-          .then(response => response.json())
-          .then(data => {
-              const pdfBase64 = data.pdf_base64;
-              
-              const iframe = document.getElementById("pdf-viewer");
-              iframe.style.display = 'block';
-              iframe.src = 'data:application/pdf;base64,' + pdfBase64;
-          })
-          .catch(error => {
-              console.error('Error fetching the PDF:', error);
-          });*/
 
 
       updatePage('/paper', "a4PDF" , { questions:questions, event:event, subject:subject, std:std, hrs:hrs, MM:MM, value:"a4PDF" });
-      //new bootstrap.Modal(document.getElementById('paperModal')).show(); 
 
 
     }
