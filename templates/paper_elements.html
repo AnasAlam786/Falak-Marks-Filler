@@ -87,7 +87,7 @@
     </div>
     
 
-    <div style="width: 100%;">
+    <div class = "content" style="width: 100%;">
         {% if questions %}
         {% for question in questions %}
         {% if question.type == "match" and question.subQuestion|default([])|length != 0 %}
@@ -163,19 +163,4 @@
         {% endfor %}
         {% endif %}
     </div>
-
-
-    <style>
-    .a4-paper {
-          padding: 10px;
-          max-width: 210mm;
-          max-height: 297mm;
-          color: black;
-          overflow: hidden;
-          background: rgb(255, 255, 255);
-          line-height: 1.2;
-          font-size: 15px;
-          
-        }
-    </style>
 </div>
