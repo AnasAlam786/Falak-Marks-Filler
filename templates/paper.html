@@ -83,14 +83,6 @@
     <button class="btn btn-primary w-75" onclick="convert()">Convert</button>
 </div>
 
-<button onclick="download()">Download PDF</button>
-
-
-<div id="a4PDF" style="display: none;" class="a4-paper">
-
-</div>
-
-
 <script>
 
     var questionCount=1
@@ -209,6 +201,7 @@
       MM=document.getElementsByClassName("M-M")[0].value
 
       const html = await updatePage('/paper', null, { questions:questions, event:event, subject:subject, std:std, hrs:hrs, MM:MM, value:"a4PDF" })
+      console.log(html)
 
       const newWindow = window.open("", "_blank");
         
@@ -238,7 +231,10 @@
                         background: rgb(255, 555, 255);
                         line-height: 1.2;
                         page-break-after: always;
-                        font-size: 20px;   
+                        font-size: 20px;
+                        
+
+                        
                     }
                 }
                 </style>
