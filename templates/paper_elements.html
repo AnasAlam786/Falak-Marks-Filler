@@ -49,8 +49,6 @@
     <input type="text" class="sub-question rounded-pill form-control" placeholder="Enter the word" required>
     <input type="text" class="sub-question rounded-pill form-control" placeholder="Enter the word" required>
     <input type="text" class="sub-question rounded-pill form-control" placeholder="Enter the word" required>
-    <input type="text" class="sub-question rounded-pill form-control" placeholder="Enter the word" required>
-    <input type="text" class="sub-question rounded-pill form-control" placeholder="Enter the word" required>
     
     <button class="btn btn-outline-success ms-1" onclick="addQuestion(this)" style="width: 35px; height: 38px;">+</button>
     <button class="btn btn-outline-danger ms-1" onclick="remove(this)" style="width: 35px; height: 38px;">-</button>
@@ -89,7 +87,7 @@
     </div>
     
 
-    <div style="width: 100%; padding: 5px;">
+    <div style="width: 100%;">
         {% if questions %}
         {% for question in questions %}
         {% if question.type == "match" and question.subQuestion|default([])|length != 0 %}
@@ -169,15 +167,13 @@
 
     <style>
     .a4-paper {
-        height: 297mm;
-        width: 210mm;
-        color: black;
-        overflow: hidden;
-        padding: 1mm;
-        background: white;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        line-height: 1.2;
-        font-size: 13px;
-        }
+          padding: 5px;
+          max-width: 210mm;
+          color: black;
+          overflow: hidden;
+          background: rgb(255, 255, 255);
+          line-height: 1.2;
+          font-size: 20px;
+    }
     </style>
 </div>
