@@ -93,28 +93,27 @@
 
 <script>
 
-        function downloadPDF() {
-            const element = document.getElementById("a4PDF");
+function downloadPDF() {
+    const element = document.getElementById("a4PDF");
 
-            const { jsPDF } = window.jspdf;
+    const { jsPDF } = window.jspdf;
 
-            const pdf = new jsPDF({
-                unit: "mm",
-                format: [210, 297],  // Exact A4 size
-                orientation: "portrait"
-            });
+    // Assuming you have included jsPDF and html2canvas via CDN or import statements
+    const pdf = new jsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
 
-            // Get element as canvas
-            html2canvas(element, { scale: 3 }).then((canvas) => {
-                const imgData = canvas.toDataURL("image/jpeg", 1.0);
-
-                // Add image to PDF without margins
-                pdf.addImage(imgData, "JPEG", 0, 0, 210, 297);
-                pdf.save("output.pdf");
-            });
+    html2canvas(document.getElementById("a4PDF"), { scale: 5 }).then(canvas => {
+    const imgData = canvas.toDataURL("image/jpeg", 1.0);
+    const pdfWidth = 210; // Fixed width for A4
+    const ratio = canvas.height / canvas.width;
+    const imgHeight = pdfWidth * ratio;
+    
+    pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, imgHeight);
+    pdf.save("output.pdf");
+    });
 
 
-        }
+
+}
 
 
 
