@@ -78,7 +78,7 @@
           <a href="/students"><i class="fas fa-user-graduate"></i> Students Data</a>
           <a href="/updatemarks"><i class="fas fa-pencil-alt"></i> Update Marks</a>
           <a href="/marks"><i class="fas fa-book-open"></i> Show Marks</a>
-          <a href="/paper"><i class="fas fa-pencil-alt"></i> Create Paper</a>
+          <a href="/paper"><i class="fas fa-pencil-alt mt-4"></i> Create Paper</a>
           <a href="/entrycard"><i class="fas fa-id-card"></i> Entry Card</a>
           <a href="/seatChits"><i class="fas fa-chalkboard-teacher"></i> Seat Chits</a>
         </div>        
@@ -104,13 +104,15 @@
       });
 
       const data = await response.json();
-      element= document.getElementById(id)
+      if(id){
+        element= document.getElementById(id)
 
-      if (append){
-        element.insertAdjacentHTML(append, data.html)}  //"beforebegin", "afterbegin", "beforeend", "afterend"
-      else{element.innerHTML = data.html}
-
-      return data.data;
+        if (append){
+          element.insertAdjacentHTML(append, data.html)}  //"beforebegin", "afterbegin", "beforeend", "afterend"
+        
+        else{element.innerHTML = data.html}
+      }
+      return data.html;
     } catch (error) {
         console.error('Error:', error);
     }
